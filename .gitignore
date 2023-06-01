@@ -2,6 +2,7 @@
 ./lesson2/.vagrant/
 ./lesson2/*.vdi
 *.vdi
+./lesson2/.vagrant
 Vagrantfile.ub
 
 
