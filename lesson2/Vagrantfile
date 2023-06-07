@@ -41,7 +41,7 @@ Vagrant.configure("2") do |config|
 
   MACHINES.each do |boxname, boxconfig|
       config.vm.box_check_update = false
-      config.vm.synced_folder "/home/maxmaxm/Downloads/", "/home/vagrant"
+      config.vm.synced_folder "/root/Public/", "/media"
       config.vm.boot_timeout = 600
       config.vm.define boxname do |box|
           box.vm.box = boxconfig[:box_name]
