@@ -1,0 +1,33 @@
+Script started on Wed Jun  7 12:33:31 2023
+[vagrant@otuslinux ~]$ mdadm /dev/md0 --fail /dev/sde
+mdadm: error opening /dev/md0: Permission denied
+[vagrant@otuslinux ~]$ sudo mdadm /dev/md0 --fail /dev/sde
+mdadm: set /dev/sde faulty in /dev/md0
+[vagrant@otuslinux ~]$ cat /proc/mdstat
+Personalities : [raid10] 
+md0 : active raid10 sde[3](F) sdd[2] sdc[1] sdb[0]
+      507904 blocks super 1.2 512K chunks 2 near-copies [4/3] [UUU_]
+      
+unused devices: <none>
+[vagrant@otuslinux ~]$ sudo mdadm --remove /dev/md0 /dev/sde
+mdadm: hot removed /dev/sde from /dev/md0
+[vagrant@otuslinux ~]$ sudo mdadm --add /dev/md0 /dev/sdf
+cat /proc/mdstatmdadm: added /dev/sdf
+[vagrant@otuslinux ~]$ cat /proc/mdstat
+Personalities : [raid10] 
+md0 : active raid10 sdf[4] sdd[2] sdc[1] sdb[0]
+      507904 blocks super 1.2 512K chunks 2 near-copies [4/3] [UUU_]
+      [===========>.........]  recovery = 58.3% (148608/253952) finish=0.0min speed=37152K/sec
+      
+unused devices: <none>
+[vagrant@otuslinux ~]$ cat /proc/mdstat
+Personalities : [raid10] 
+md0 : active raid10 sdf[4] sdd[2] sdc[1] sdb[0]
+      507904 blocks super 1.2 512K chunks 2 near-copies [4/4] [UUUU]
+      
+unused devices: <none>
+[vagrant@otuslinux ~]$ exit
+exit
+
+Script done on Wed Jun  7 12:38:52 2023
+

@@ -1,0 +1,82 @@
+Script started on Wed Jun  7 12:23:06 2023
+[vagrant@otuslinux ~]$ lsblk
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda      8:0    0   40G  0 disk 
+`-sda1   8:1    0   40G  0 part /
+sdb      8:16   0  250M  0 disk 
+sdc      8:32   0  250M  0 disk 
+sdd      8:48   0  250M  0 disk 
+sde      8:64   0  250M  0 disk 
+sdf      8:80   0  250M  0 disk 
+[vagrant@otuslinux ~]$ sudo  mdadm --zero-superblock --force /dev/sd{b,c,d,e,f}
+mdadm: Unrecognised md component device - /dev/sdb
+mdadm: Unrecognised md component device - /dev/sdc
+mdadm: Unrecognised md component device - /dev/sdd
+mdadm: Unrecognised md component device - /dev/sde
+mdadm: Unrecognised md component device - /dev/sdf
+[vagrant@otuslinux ~]$  sudo mdadm --create --verbose /dev/md0 -l 10 -n 4 /dev/sd{b,c,d,e}
+mdadm: layout defaults to n2
+mdadm: layout defaults to n2
+mdadm: chunk size defaults to 512K
+mdadm: size set to 253952K
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md0 started.
+[vagrant@otuslinux ~]$ cat /proc/mdstat
+Personalities : [raid10] 
+md0 : active raid10 sde[3] sdd[2] sdc[1] sdb[0]
+      507904 blocks super 1.2 512K chunks 2 near-copies [4/4] [UUUU]
+      
+unused devices: <none>
+[vagrant@otuslinux ~]$ mdadm --detail
+mdadm: must be super-user to perform this action
+[vagrant@otuslinux ~]$ sudo mdadm --detail
+mdadm: No devices given.
+[vagrant@otuslinux ~]$ sudo mdadm --detail /dev/md0
+/dev/md0:
+           Version : 1.2
+     Creation Time : Wed Jun  7 12:26:41 2023
+        Raid Level : raid10
+        Array Size : 507904 (496.00 MiB 520.09 MB)
+     Used Dev Size : 253952 (248.00 MiB 260.05 MB)
+      Raid Devices : 4
+     Total Devices : 4
+       Persistence : Superblock is persistent
+
+       Update Time : Wed Jun  7 12:27:00 2023
+             State : clean 
+    Active Devices : 4
+   Working Devices : 4
+    Failed Devices : 0
+     Spare Devices : 0
+
+            Layout : near=2
+        Chunk Size : 512K
+
+Consistency Policy : resync
+
+              Name : otuslinux:0  (local to host otuslinux)
+              UUID : fea23203:e46676c2:c969b780:fd8e60ce
+            Events : 17
+
+    Number   Major   Minor   RaidDevice State
+       0       8       16        0      active sync set-A   /dev/sdb
+       1       8       32        1      active sync set-B   /dev/sdc
+       2       8       48        2      active sync set-A   /dev/sdd
+       3       8       64        3      active sync set-B   /dev/sde
+[vagrant@otuslinux ~]$ echo "Creating configuration file mdadm.conf"
+Creating configuration file mdadm.conf
+[vagrant@otuslinux ~]$ mkdir /etc/mdadm
+mkdir: cannot create directory '/etc/mdadm': File exists
+[vagrant@otuslinux ~]$ echo "DEVICE partitions" > /etc/mdadm/mdadm.conf
+bash: /etc/mdadm/mdadm.conf: Permission denied
+[vagrant@otuslinux ~]$ mdadm --detail --scan --verbose | awk '/ARRAY/ {print}' >> /etc/mdadm/mdadm.conf
+bash: /etc/mdadm/mdadm.conf: Permission denied
+mdadm: must be super-user to perform this action
+[vagrant@otuslinux ~]$ cat /etc/mdadm/mdadm.conf 
+DEVICE partitions
+ARRAY /dev/md/md130 level=raid10 num-devices=4 metadata=1.2 name=maxmaxm-VirtualBox:md130 UUID=e98d9637:dc9f5685:f5487c4e:92d8e052
+[vagrant@otuslinux ~]$ exit
+exit
+
+Script done on Wed Jun  7 12:33:22 2023
+
