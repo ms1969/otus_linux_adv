@@ -2,8 +2,8 @@
 
 ## Lesson 2
 
-<detail>
-Сделанные задания:
+<details>
+###Сделанные задания:
 
 1. Изменен Vagrantfile. Файл находиться в папке lesson2.
 2. Создан RAID10 и файл mdadm.conf. Ход выполнения отражен в файле lesson2/screen1.
@@ -12,4 +12,4 @@
 
 приложения в папке lesson2: Vagrantfile, mdadm.conf, mdraid.sh, fstab
   
-  </detail>
+  </details>
