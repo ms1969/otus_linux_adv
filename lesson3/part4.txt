@@ -1,0 +1,78 @@
+
+#Remove temporary vg_root,lv_root
+
+[root@maxmaxm-VirtualBox boot]#lvremove /dev/vg_root/lv_root
+Do you really want to remove active logical volume vg_root/lv_root? [y/n]: y
+  Logical volume "lv_root" successfully removed
+
+[root@maxmaxm-VirtualBox boot]#vgremove /dev/vg_root
+  Volume group "vg_root" successfully removed
+
+[root@maxmaxm-VirtualBox boot]#pvremove /dev/sdb
+  Labels on physical volume "/dev/sdb" successfully wiped
+
+
+#Create volume for /home
+
+[root@maxmaxm-VirtualBox boot]#lvcreate -n LogVol_Home -L 2G /dev/VolGroup00
+  Logical volume "LogVol_Home" created
+
+[root@maxmaxm-VirtualBox boot]#mkfs.xfs /dev/VolGroup00/LogVol_Home
+meta-data=/dev/VolGroup00/LV_Home isize=512    agcount=4, agsize=131072 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=524288, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+
+#Mount to the temporary point for moving data
+
+[root@maxmaxm-VirtualBox boot]#mount /dev/VolGroup00/LV_Home /mnt/
+
+#Moving data, remove data from old place, change fstab
+
+[root@maxmaxm-VirtualBox boot]#rsync -avHPSAX --quiet /home/ /mnt/
+[root@maxmaxm-VirtualBox boot]#rm -rf /home/*
+[root@maxmaxm-VirtualBox boot]#umount /mnt && mount /dev/VolGroup00/LV_Home /home/
+[root@maxmaxm-VirtualBox boot]#echo "`blkid | grep Home | awk '{print $2}'` /home xfs defaults 0 0" >> /etc/fstab
+
+#home - create volume for snapshot
+
+#create files for test
+[root@maxmaxm-VirtualBox boot]#touch /home/file{1..20}
+[root@maxmaxm-VirtualBox boot]#ls /home/
+file1  file10  file11  file12  file13  file14  file15  file16  file17  file18  file19  file2  file20  file3  file4  file5  file6  file7  file8  file9  vagrant
+
+#Create snapshot
+[root@maxmaxm-VirtualBox boot]#lvcreate -L 100MB -s -n home_snap /dev/VolGroup00/LV_Home
+  Rounding up size to full physical extent 128.00 MiB
+  Logical volume "home_snap" created.
+
+#remove some files
+
+[root@maxmaxm-VirtualBox boot]#rm -f /home/file{5..20}
+
+root@maxmaxm-VirtualBox boot]#ls /home/
+file1  file2 file3 file4  vagrant
+
+
+#restore snapshot
+
+[root@maxmaxm-VirtualBox boot]#umount /home
+[root@maxmaxm-VirtualBox boot]#lvconvert --merge /dev/VolGroup00/home_snap
+  Merging of volume VolGroup00/home_snap started.
+  VolGroup00/LogVol_Home:  100.00%
+
+[root@maxmaxm-VirtualBox boot]#mount /home
+
+[root@maxmaxm-VirtualBox boot]#ls /home/
+file1  file10  file11  file12  file13  file14  file15  file16  file17  file18  file19  file2  file20  file3  file4  file5  file6  file7  file8  file9  vagrant
+
+#Data restored
+
+
+
+
