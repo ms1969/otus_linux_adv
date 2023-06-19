@@ -1,0 +1,43 @@
+#Работа со снапшотом, поиск сообщения от преподавателя
+
+
+#Скачаем файл, указанный в задании:
+
+[root@zfs ~]# wget -O otus_task2.file --no-check-certificate "https://drive.google.com/u/0/uc?id=1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG&export=download"
+--2023-06-19 13:57:50--  https://drive.google.com/u/0/uc?id=1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG&export=download
+Resolving drive.google.com (drive.google.com)... 142.250.150.194, 2a00:1450:4010:c1c::c2
+Connecting to drive.google.com (drive.google.com)|142.250.150.194|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://drive.google.com/uc?id=1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG&export=download [following]
+--2023-06-19 13:57:51--  https://drive.google.com/uc?id=1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG&export=download
+Reusing existing connection to drive.google.com:443.
+HTTP request sent, awaiting response... 303 See Other
+Location: https://doc-00-bo-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/ukgi5emd8fg8p1bu38aiihqnorgkkhv4/1687184700000/16189157874053420687/*/1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG?e=download&uuid=ebd6676f-eb8a-47f6-a040-46093cc2b6a1 [following]
+Warning: wildcards not supported in HTTP.
+--2023-06-19 13:57:57--  https://doc-00-bo-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/ukgi5emd8fg8p1bu38aiihqnorgkkhv4/1687184700000/16189157874053420687/*/1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG?e=download&uuid=ebd6676f-eb8a-47f6-a040-46093cc2b6a1
+Resolving doc-00-bo-docs.googleusercontent.com (doc-00-bo-docs.googleusercontent.com)... 216.58.209.193, 2a00:1450:4026:803::2001
+Connecting to doc-00-bo-docs.googleusercontent.com (doc-00-bo-docs.googleusercontent.com)|216.58.209.193|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5432736 (5.2M) [application/octet-stream]
+Saving to: 'otus_task2.file'
+
+100%[=================================================================>] 5,432,736   5.34MB/s   in 1.0s   
+
+#Восстанавливаем файловую систему из снапшота:
+
+[root@zfs ~]# zfs receive otus/test@today < otus_task2.file
+
+#Далее, ищем в каталоге /otus/test файл с именем “secret_message”
+
+[root@zfs ~]# find /otus/test -name "secret_message"
+/otus/test/task1/file_mess/secret_message
+
+#Смотрим содержимое 
+
+[root@zfs ~]# cat /otus/test/task1/file_mess/secret_message
+https://github.com/sindresorhus/awesome
+
+#Зашифрованное сообщение - это ссылка на репозиторий github- https://github.com/sindresorhus/awesome
+
+
+
