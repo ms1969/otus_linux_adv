@@ -1,0 +1,129 @@
+# Заходим на сервер NFS
+
+root@ lesson6$ vagrant ssh nfss
+Last login: Fri Jun 23 05:01:31 2023 from 10.0.2.2
+[vagrant@nfss ~]$ sudo -i
+
+# Выполняем команды от суперпользователя
+
+# Проверяем, что на сервере работает Firewall и необходимые порты открыты
+
+[root@nfss ~]# systemctl status firewalld.service 
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Fri 2023-06-23 04:56:45 UTC; 11min ago
+     Docs: man:firewalld(1)
+ Main PID: 3647 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─3647 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+
+Jun 23 04:56:45 nfss systemd[1]: Starting firewalld - dynamic firewall daemon...
+Jun 23 04:56:45 nfss systemd[1]: Started firewalld - dynamic firewall daemon.
+Jun 23 04:56:45 nfss firewalld[3647]: WARNING: AllowZoneDrifting is enabled. This is considered an i...now.
+Jun 23 04:56:46 nfss firewalld[3647]: WARNING: AllowZoneDrifting is enabled. This is considered an i...now.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@nfss ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: eth0 eth1
+  sources: 
+  services: dhcpv6-client mountd nfs nfs3 rpc-bind ssh
+  ports: 111/udp 2049/udp
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+[root@nfss ~]# systemctl status firewalld.service 
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Fri 2023-06-23 04:56:45 UTC; 20min ago
+     Docs: man:firewalld(1)
+ Main PID: 3647 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─3647 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+
+Jun 23 04:56:45 nfss systemd[1]: Starting firewalld - dynamic firewall daemon...
+Jun 23 04:56:45 nfss systemd[1]: Started firewalld - dynamic firewall daemon.
+Jun 23 04:56:45 nfss firewalld[3647]: WARNING: AllowZoneDrifting is enabled. This is considered an i...now.
+Jun 23 04:56:46 nfss firewalld[3647]: WARNING: AllowZoneDrifting is enabled. This is considered an i...now.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+# Создаем файл 
+
+[root@nfss ~]# ls /srv/share/upload
+[root@nfss ~]# touch /srv/share/upload/chesk_file
+[root@nfss ~]# ls /srv/share/upload
+chesk_file
+
+#Проверяем доступность файлана  клиенте - вывод в файле "client.txt"
+
+#Перегружаем сервер
+
+[root@nfss ~]# reboot 
+Connection to 127.0.0.1 closed by remote host
+
+#Проверяем после перезагрузки
+
+Last login: Fri Jun 23 05:08:12 2023 from 10.0.2.2
+[vagrant@nfss ~]$ sudo -i
+
+#Проверяем наличие файлов в каталоге `/srv/share/upload/`
+
+[root@nfss ~]# ls /srv/share/upload/
+chesk_file  client_file
+
+#Проверяем статус сервера NFS 
+
+[root@nfss ~]# systemctl status nfs
+● nfs-server.service - NFS server and services
+   Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; enabled; vendor preset: disabled)
+  Drop-In: /run/systemd/generator/nfs-server.service.d
+           └─order-with-mounts.conf
+   Active: active (exited) since Fri 2023-06-23 05:40:42 UTC; 8min ago
+  Process: 827 ExecStartPost=/bin/sh -c if systemctl -q is-active gssproxy; then systemctl reload gssproxy ; fi (code=exited, status=0/SUCCESS)
+  Process: 807 ExecStart=/usr/sbin/rpc.nfsd $RPCNFSDARGS (code=exited, status=0/SUCCESS)
+  Process: 804 ExecStartPre=/usr/sbin/exportfs -r (code=exited, status=0/SUCCESS)
+ Main PID: 807 (code=exited, status=0/SUCCESS)
+   CGroup: /system.slice/nfs-server.service
+
+Jun 23 05:40:42 nfss systemd[1]: Starting NFS server and services...
+Jun 23 05:40:42 nfss systemd[1]: Started NFS server and services.
+
+#Проверяем статус firewall
+
+[root@nfss ~]# systemctl status firewalld 
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Fri 2023-06-23 05:40:39 UTC; 8min ago
+     Docs: man:firewalld(1)
+ Main PID: 414 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─414 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+
+Jun 23 05:40:39 nfss systemd[1]: Starting firewalld - dynamic firewall daemon...
+Jun 23 05:40:39 nfss systemd[1]: Started firewalld - dynamic firewall daemon.
+Jun 23 05:40:39 nfss firewalld[414]: WARNING: AllowZoneDrifting is enabled. This is considered an insecure configuration option. It will be removed in a future re...ing it now.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+#Проверяем экспорты
+
+[root@nfss ~]# exportfs -s 
+/srv/share  192.168.56.11(sync,wdelay,hide,no_subtree_check,sec=sys,rw,secure,root_squash,all_squash)
+
+
+#Проверяем работу RPC `showmount -a 192.168.56.10
+
+[root@nfss ~]# showmount -a 192.168.56.10 
+All mount points on 192.168.56.10:
+192.168.56.11:/srv/share
+
+
+
+
+
+
+
