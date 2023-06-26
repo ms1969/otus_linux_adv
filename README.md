@@ -126,7 +126,7 @@ terminal.txt - файл хода работ с коментариями и вы�
 #### Задание:
 
 
-1.Сбросить пароль пользователя root 3-мя способами
+1.Сбросить пароль пользователя root 3-мя способами 
 2.Переименовть VG с корневым томом  
 3.Добавить модуль в initrd  
 
@@ -137,17 +137,17 @@ terminal.txt - файл хода работ с коментариями и вы�
 Файл /**.autorelabel**  подтверждает легитимность внесения изменений в /etc/shadow для selinux.
 **mount -o remount,ro / -** проводит перемонтирование в режиме read-only.
 
-![Image 1](Lesson8/method1_screen1.png)
+![Image 1](lesson8/method1_screen1.png)
 
-![Image 2](Lesson8/method1_screen2.png)
+![Image 2](lesson8/method1_screen2.png)
 
-![Image 3](Lesson8/method2_screen1.png)
+![Image 3](lesson8/method2_screen1.png)
 
-![Image 4](Lesson8/method2_screen2.png)
+![Image 4](lesson8/method2_screen2.png)
 
-![Image 5](Lesson8/method3_screen1.png)
+![Image 5](lesson8/method3_screen1.png)
 
-![Image 6](Lesson8/method3_screen2.png)
+![Image 6](lesson8/method3_screen2.png)
 
 
 
