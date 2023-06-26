@@ -190,6 +190,10 @@ c) /boot/grub2/grub.cfg
 
 ![Image 10](lesson8/grub_cfg.png)
 
+Пересоздаем initrd image
+
+![Image 10](lesson8/initramfs.png)
+
 
 
 
