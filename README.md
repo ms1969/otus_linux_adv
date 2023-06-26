@@ -196,7 +196,7 @@ c) /boot/grub2/grub.cfg
 
 Далее перзагружаемся и проверяем, что у volume group новое имя
 
-![Image 12](lesson8/vg_final.png)
+![Image 12](lesson8/vgs_final.png)
 
 
 
