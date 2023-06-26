@@ -254,6 +254,7 @@ echo " continuing...."
 
 Last login: Mon Jun 26 15:18:33 2023 from 192.168.0.17
 [root@192 ~]# mkinitrd -f -v /boot/initramfs-$(uname -r).img $(uname -r)
+
 Executing: /usr/sbin/dracut -f -v /boot/initramfs-3.10.0-1160.el7.x86_64.img 3.10.0-1160.el7.x86_64
 dracut module 'busybox' will not be installed, because command 'busybox' could not be found!
 dracut module 'dmsquash-live-ntfs' will not be installed, because command 'ntfs-3g' could not be found!
@@ -343,6 +344,7 @@ Current CPU model 'GenuineIntel 06-a7-01' doesn't match configuration CPU model 
 #### Проверяем, что наш модуль загружен в образ
 
 [root@192 ~]#  lsinitrd -m /boot/initramfs-$(uname -r).img | grep test
+
 test
 
 
