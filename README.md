@@ -347,8 +347,13 @@ Current CPU model 'GenuineIntel 06-a7-01' doesn't match configuration CPU model 
 
 test
 
+#### Убираем из grub.cfg опции rghb и quiet
 
+![Image 13](lesson8/grub_without_options.png)
 
+##### Перегружаемся и проверяем
+
+![Image 14](lesson8/final.jpg)
 
 
 </details>
