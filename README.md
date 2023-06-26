@@ -192,7 +192,11 @@ c) /boot/grub2/grub.cfg
 
 Пересоздаем initrd image
 
-![Image 10](lesson8/initramfs.png)
+![Image 11](lesson8/initramfs.png)
+
+Далее перзагружаемся и проверяем, что у volume group новое имя
+
+![Image 12](lesson8/vg_final.png)
 
 
 
