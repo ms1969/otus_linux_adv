@@ -139,15 +139,15 @@ terminal.txt - файл хода работ с коментариями и вы�
 
 ![Image 1](lesson8/method1-screen1.png)
 
-![Image 2](lesson8/method1_screen2.png)
+![Image 2](lesson8/method1-screen2.png)
 
-![Image 3](lesson8/method2_screen1.png)
+![Image 3](lesson8/method2-screen1.png)
 
-![Image 4](lesson8/method2_screen2.png)
+![Image 4](lesson8/method2-screen2.png)
 
-![Image 5](lesson8/method3_screen1.png)
+![Image 5](lesson8/method3-screen1.png)
 
-![Image 6](lesson8/method3_screen2.png)
+![Image 6](lesson8/method3-screen2.png)
 
 
 
