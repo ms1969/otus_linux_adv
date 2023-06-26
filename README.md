@@ -351,7 +351,7 @@ test
 
 ![Image 13](lesson8/grub_without_options.png)
 
-##### Перегружаемся и проверяем
+#### Перегружаемся и проверяем
 
 ![Image 14](lesson8/final.jpg)
 
