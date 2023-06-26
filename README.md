@@ -201,12 +201,12 @@ c) /boot/grub2/grub.cfg
 
 ### 3.Добавить модуль в initrd 
 
-# Создаем директорию для модулей 
+#### Создаем директорию для модулей 
 
 [root@192 ~]#  mkdir /usr/lib/dracut/modules.d/01test
 [root@192 ~]#  cd /usr/lib/dracut/modules.d/01test
 
-# Формируем модуль "module-setup.sh"
+#### Формируем модуль "module-setup.sh"
 
 [root@192 01test]# vi  module-setup.sh
 [root@192 01test]# cat  module-setup.sh
