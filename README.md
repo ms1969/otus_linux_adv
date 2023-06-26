@@ -199,6 +199,58 @@ c) /boot/grub2/grub.cfg
 ![Image 12](lesson8/vgs_final.png)
 
 
+### 3.Добавить модуль в initrd 
+
+# Создаем директорию для модулей 
+
+[root@192 ~]#  mkdir /usr/lib/dracut/modules.d/01test
+[root@192 ~]#  cd /usr/lib/dracut/modules.d/01test
+
+# Формируем модуль "module-setup.sh"
+
+[root@192 01test]# vi  module-setup.sh
+[root@192 01test]# cat  module-setup.sh
+#!/bin/bash
+
+check() {
+    return 0
+}
+
+depends() {
+    return 0
+}
+
+install() {
+    inst_hook cleanup 00 "${moddir}/test.sh"
+}
+
+# Формируем модуль "test.sh"
+
+[root@192 01test]# vi test.sh
+[root@192 01test]# cat  test.sh
+#!/bin/bash
+
+exec 0<>/dev/console 1<>/dev/console 2<>/dev/console
+cat <<'msgend'
+Hello! You are in dracut module!
+ ___________________
+< I'm dracut module >
+ -------------------
+   \
+    \
+        .--.
+       |o_o |
+       |:_/ |
+      //   \ \
+     (|     | )
+    /'\_   _/`\
+    \___)=(___/
+msgend
+sleep 10
+echo " continuing...."
+
+
+
 
 
 </details>
