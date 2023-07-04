@@ -1,0 +1,96 @@
+# Cоздаём файл с конфигурацией для сервиса в директории /etc/sysconfig
+# - из неё сервис будет брать необходимые переменные
+
+[root@Lesson9 ~]# cat > /etc/sysconfig/watchlog
+# Configuration file for my watchlog service
+# Place it to /etc/sysconfig
+
+# File and word in that file that we will be monit
+WORD="ALERT"
+LOG=/var/log/watchlog.log
+
+#Создаем скрипт для заполнения лога 
+[root@Lesson9 ~]# cat line_add.sh
+#!/bin/bash
+/bin/echo `/bin/date "+%b %d %T"` ALERT >> /var/log/watchlog.log
+
+#Делаем файл исполняемым
+
+[root@Lesson9 ~]# chmod o+x line_add.sh
+
+#запускаем и проверяем что в файле лога появилась запись со словом ALERT
+
+[root@Lesson9 ~]# ./line_add.sh
+[root@Lesson9 ~]# cat /var/log/watchlog.log
+Jul 04 10:12:16 ALERT
+
+#Создаем скрипт проверки лога
+
+[root@Lesson9 ~]# cat > /opt/watchlog.sh
+#!/bin/bash
+
+WORD=$1
+LOG=$2
+DATE=`date`
+
+if grep $WORD $LOG &> /dev/null
+then
+logger "$DATE: I found word, Master!"
+else
+exit 0
+fi
+
+#Добавляем права для запуска
+
+[root@Lesson9 ~]# chmod +x /opt/watchlog.sh
+
+
+#создаем юнит файл для сервиса
+
+[root@Lesson9 ~]# cat > /etc/systemd/system/watchlog.service
+[Unit]
+Description=My watchlog service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/sysconfig/watchlog
+ExecStart=/opt/watchlog.sh $WORD $LOG
+
+#создаем юнит файл для таймера
+
+[root@Lesson9 ~]# cat > /etc/systemd/system/watchlog.timer
+[Unit]
+Description=Run watchlog script every 30 second
+
+[Timer]
+# Run every 30 second
+OnUnitActiveSec=30
+Unit=watchlog.service
+
+[Install]
+WantedBy=multi-user.target
+
+
+#перечитываем конфигурацию
+
+sudo systemctl daemon-reload
+
+#Запускаем таймер и проверяем, лог
+
+root@Lesson9 ~]# systemctl start watchlog.timer
+[root@Lesson9 ~]# tail -f /var/log/messages
+Jul  4 10:34:51 localhost systemd: Started Run watchlog script every 30 second.
+Jul  4 10:37:55 localhost systemd: Starting My watchlog service...
+Jul  4 10:37:55 localhost root: Tue Jul  4 10:37:55 UTC 2023: I found word, Master!
+Jul  4 10:37:55 localhost systemd: Started My watchlog service.
+Jul  4 10:38:53 localhost systemd: Starting My watchlog service...
+Jul  4 10:38:53 localhost root: Tue Jul  4 10:38:53 UTC 2023: I found word, Master!
+Jul  4 10:38:53 localhost systemd: Started My watchlog service.
+Jul  4 10:39:33 localhost systemd: Starting My watchlog service...
+Jul  4 10:39:33 localhost root: Tue Jul  4 10:39:33 UTC 2023: I found word, Master!
+Jul  4 10:39:33 localhost systemd: Started My watchlog service.
+
+#По логу убедились, что сервис переодически отрабатывает и находит наше слово
+
+
+

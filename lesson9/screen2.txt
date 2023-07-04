@@ -1,0 +1,83 @@
+#Установка spawn-fcgi и необходимых пакетов проведена
+в соответсвии с Vagrantfile во время подготовки системы 
+
+#Раскоментируем строки в 
+#/etc/sysconfig/spawn-fcgi
+[root@Lesson9 ~]# vi  /etc/sysconfig/spawn-fcgi
+[root@Lesson9 ~]# cat  /etc/sysconfig/spawn-fcgi
+# You must set some working options before the "spawn-fcgi" service will work.
+# If SOCKET points to a file, then this file is cleaned up by the init script.
+#
+# See spawn-fcgi(1) for all possible options.
+#
+# Example :
+SOCKET=/var/run/php-fcgi.sock
+OPTIONS="-u apache -g apache -s $SOCKET -S -M 0600 -C 32 -F 1 -P /var/run/spawn-fcgi.pid -- /usr/bin/php-cgi"
+
+
+#Подготавливаем юнит
+
+[root@Lesson9 ~]# cat /etc/systemd/system/spawn-fcgi.service
+[Unit]
+Description=Spawn-fcgi startup service by Otus
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/var/run/spawn-fcgi.pid
+EnvironmentFile=/etc/sysconfig/spawn-fcgi
+ExecStart=/usr/bin/spawn-fcgi -n $OPTIONS
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+
+
+#Убеждаемся, что все успешно работает
+
+[root@Lesson9 ~]# systemctl start spawn-fcgi
+[root@Lesson9 ~]# 
+[root@Lesson9 ~]# systemctl status spawn-fcgi
+● spawn-fcgi.service - Spawn-fcgi startup service by Otus
+   Loaded: loaded (/etc/systemd/system/spawn-fcgi.service; disabled; vendor preset: disabled)
+   Active: active (running) since Tue 2023-07-04 11:04:30 UTC; 9s ago
+ Main PID: 22818 (php-cgi)
+   CGroup: /system.slice/spawn-fcgi.service
+           ├─22818 /usr/bin/php-cgi
+           ├─22819 /usr/bin/php-cgi
+           ├─22820 /usr/bin/php-cgi
+           ├─22821 /usr/bin/php-cgi
+           ├─22822 /usr/bin/php-cgi
+           ├─22823 /usr/bin/php-cgi
+           ├─22824 /usr/bin/php-cgi
+           ├─22825 /usr/bin/php-cgi
+           ├─22826 /usr/bin/php-cgi
+           ├─22827 /usr/bin/php-cgi
+           ├─22828 /usr/bin/php-cgi
+           ├─22829 /usr/bin/php-cgi
+           ├─22830 /usr/bin/php-cgi
+           ├─22831 /usr/bin/php-cgi
+           ├─22832 /usr/bin/php-cgi
+           ├─22833 /usr/bin/php-cgi
+           ├─22834 /usr/bin/php-cgi
+           ├─22835 /usr/bin/php-cgi
+           ├─22836 /usr/bin/php-cgi
+           ├─22837 /usr/bin/php-cgi
+           ├─22838 /usr/bin/php-cgi
+           ├─22839 /usr/bin/php-cgi
+           ├─22840 /usr/bin/php-cgi
+           ├─22841 /usr/bin/php-cgi
+           ├─22842 /usr/bin/php-cgi
+           ├─22843 /usr/bin/php-cgi
+           ├─22844 /usr/bin/php-cgi
+           ├─22845 /usr/bin/php-cgi
+           ├─22846 /usr/bin/php-cgi
+           ├─22847 /usr/bin/php-cgi
+           ├─22848 /usr/bin/php-cgi
+           ├─22849 /usr/bin/php-cgi
+           └─22850 /usr/bin/php-cgi
+
+Jul 04 11:04:30 Lesson9 systemd[1]: Started Spawn-fcgi startup service by Otus.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+

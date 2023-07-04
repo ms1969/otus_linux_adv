@@ -1,0 +1,160 @@
+#Используем шаблон конфигурционного файла из /usr/lib/systemd/system/httpd.service
+
+#Копируем его в /etc/systemd/system и создаем из него @first.service и @secont.service
+
+cp /usr/lib/systemd/system/httpd.service /etc/systemd/system
+[root@Lesson9 ~]# cp /etc/systemd/system/httpd.service /etc/systemd/system/httpd@first.service
+[root@Lesson9 ~]# mv /etc/systemd/system/httpd.service /etc/systemd/system/httpd@second.service
+
+[root@Lesson9 ~]# cat /etc/systemd/system/httpd@first.service
+[Unit]
+Description=The Apache HTTP Server
+After=network.target remote-fs.target nss-lookup.target
+Documentation=man:httpd(8)
+Documentation=man:apachectl(8)
+
+[Service]
+Type=notify
+EnvironmentFile=/etc/sysconfig/httpd-%I
+ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND
+ExecReload=/usr/sbin/httpd $OPTIONS -k graceful
+ExecStop=/bin/kill -WINCH ${MAINPID}
+KillSignal=SIGCONT
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+[root@Lesson9 ~]# cat /etc/systemd/system/httpd@second.service
+[Unit]
+Description=The Apache HTTP Server
+After=network.target remote-fs.target nss-lookup.target
+Documentation=man:httpd(8)
+Documentation=man:apachectl(8)
+
+[Service]
+Type=notify
+EnvironmentFile=/etc/sysconfig/httpd-%I
+ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND
+ExecReload=/usr/sbin/httpd $OPTIONS -k graceful
+ExecStop=/bin/kill -WINCH ${MAINPID}
+KillSignal=SIGCONT
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+
+#Создаем и корректируем файлы окружения 
+#/etc/sysconfig/httpd-first и /etc/sysconfig/httpd-second
+
+[root@Lesson9 ~]# cat  /etc/sysconfig/httpd-first 
+#
+# This file can be used to set additional environment variables for
+# the httpd process, or pass additional options to the httpd
+# executable.
+#
+# Note: With previous versions of httpd, the MPM could be changed by
+# editing an "HTTPD" variable here.  With the current version, that
+# variable is now ignored.  The MPM is a loadable module, and the
+# choice of MPM can be changed by editing the configuration file
+# /etc/httpd/conf.modules.d/00-mpm.conf.
+# 
+
+#
+# To pass additional options (for instance, -D definitions) to the
+# httpd binary at startup, set OPTIONS here.
+#
+OPTIONS=-f conf/first.conf
+
+#
+# This setting ensures the httpd process is started in the "C" locale
+# by default.  (Some modules will not behave correctly if
+# case-sensitive string comparisons are performed in a different
+# locale.)
+#
+LANG=C
+
+[root@Lesson9 ~]# cat  /etc/sysconfig/httpd-second
+#
+# This file can be used to set additional environment variables for
+# the httpd process, or pass additional options to the httpd
+# executable.
+#
+# Note: With previous versions of httpd, the MPM could be changed by
+# editing an "HTTPD" variable here.  With the current version, that
+# variable is now ignored.  The MPM is a loadable module, and the
+# choice of MPM can be changed by editing the configuration file
+# /etc/httpd/conf.modules.d/00-mpm.conf.
+# 
+
+#
+# To pass additional options (for instance, -D definitions) to the
+# httpd binary at startup, set OPTIONS here.
+#
+OPTIONS=-f conf/second.conf
+
+
+#
+# This setting ensures the httpd process is started in the "C" locale
+# by default.  (Some modules will not behave correctly if
+# case-sensitive string comparisons are performed in a different
+# locale.)
+#
+LANG=C
+
+#Формируем файлы second.conf и first.conf
+
+[root@Lesson9 ~]# cp /etc/httpd/conf/httpd.conf /etc/httpd/conf/second.conf 
+[root@Lesson9 ~]# cp /etc/httpd/conf/httpd.conf /etc/httpd/conf/first.conf
+
+# Во втором файле /etc/httpd/conf/second.conf
+#замняем порт и Pid
+
+[root@Lesson9 ~]#vi /etc/httpd/conf/second.conf
+
+PidFile /var/run/httpd-second.pid
+Listen 8080
+
+[root@Lesson9 systemd]# systemctl status httpd@first    
+● httpd@first.service - The Apache HTTP Server
+   Loaded: loaded (/etc/systemd/system/httpd@first.service; disabled; vendor preset: disabled)
+   Active: active (running) since Tue 2023-07-04 13:28:21 UTC; 1min 12s ago
+     Docs: man:httpd(8)
+           man:apachectl(8)
+ Main PID: 24304 (httpd)
+   Status: "Total requests: 0; Current requests/sec: 0; Current traffic:   0 B/sec"
+   CGroup: /system.slice/system-httpd.slice/httpd@first.service
+           ├─24304 /usr/sbin/httpd -f conf/first.conf -DFOREGROUND
+           ├─24305 /usr/sbin/httpd -f conf/first.conf -DFOREGROUND
+           ├─24306 /usr/sbin/httpd -f conf/first.conf -DFOREGROUND
+           ├─24307 /usr/sbin/httpd -f conf/first.conf -DFOREGROUND
+           ├─24308 /usr/sbin/httpd -f conf/first.conf -DFOREGROUND
+           ├─24309 /usr/sbin/httpd -f conf/first.conf -DFOREGROUND
+           └─24310 /usr/sbin/httpd -f conf/first.conf -DFOREGROUND
+
+Jul 04 13:28:21 Lesson9 systemd[1]: Starting The Apache HTTP Server...
+Jul 04 13:28:21 Lesson9 httpd[24304]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 127.0.1.1. Set the 'ServerName' directive globally to suppress this message
+Jul 04 13:28:21 Lesson9 systemd[1]: Started The Apache HTTP Server.
+[root@Lesson9 systemd]# systemctl status httpd@second
+● httpd@second.service - The Apache HTTP Server
+   Loaded: loaded (/etc/systemd/system/httpd@second.service; disabled; vendor preset: disabled)
+   Active: active (running) since Tue 2023-07-04 13:28:12 UTC; 1min 28s ago
+     Docs: man:httpd(8)
+           man:apachectl(8)
+ Main PID: 24291 (httpd)
+   Status: "Total requests: 0; Current requests/sec: 0; Current traffic:   0 B/sec"
+   CGroup: /system.slice/system-httpd.slice/httpd@second.service
+           ├─24291 /usr/sbin/httpd -f conf/second.conf -DFOREGROUND
+           ├─24292 /usr/sbin/httpd -f conf/second.conf -DFOREGROUND
+           ├─24293 /usr/sbin/httpd -f conf/second.conf -DFOREGROUND
+           ├─24294 /usr/sbin/httpd -f conf/second.conf -DFOREGROUND
+           ├─24295 /usr/sbin/httpd -f conf/second.conf -DFOREGROUND
+           ├─24296 /usr/sbin/httpd -f conf/second.conf -DFOREGROUND
+           └─24297 /usr/sbin/httpd -f conf/second.conf -DFOREGROUND
+
+Jul 04 13:28:12 Lesson9 systemd[1]: Starting The Apache HTTP Server...
+Jul 04 13:28:12 Lesson9 httpd[24291]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 127.0.1.1. Set the 'ServerName' directive globally to suppress this message
+Jul 04 13:28:12 Lesson9 systemd[1]: Started The Apache HTTP Server.
+[root@Lesson9 systemd]# ss -tnulp | grep httpd      
+tcp    LISTEN     0      128    [::]:80                 [::]:*                   users:(("httpd",pid=24310,fd=4),("httpd",pid=24309,fd=4),("httpd",pid=24308,fd=4),("httpd",pid=24307,fd=4),("httpd",pid=24306,fd=4),("httpd",pid=24305,fd=4),("httpd",pid=24304,fd=4))
+tcp    LISTEN     0      128    [::]:8080               [::]:*                   users:(("httpd",pid=24297,fd=4),("httpd",pid=24296,fd=4),("httpd",pid=24295,fd=4),("httpd",pid=24294,fd=4),("httpd",pid=24293,fd=4),("httpd",pid=24292,fd=4),("httpd",pid=24291,fd=4))
+[root@Lesson9 systemd]# 
