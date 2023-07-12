@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby :
+
+MACHINES = {
+  :lesson12 => {
+        :box_name => "centos/7",
+        :ip_addr => '192.168.56.41',
+  },
+}
+
+Vagrant.configure("2") do |config|
+
+    MACHINES.each do |boxname, boxconfig|
+        config.vm.define boxname do |box|
+
+            box.vm.box = boxconfig[:box_name]
+            box.vm.host_name = boxname.to_s
+
+            
+            box.vm.network "private_network", ip: boxconfig[:ip_addr]
+
+            box.vm.provider :virtualbox do |vb|
+                    vb.customize ["modifyvm", :id, "--cpus", "2"]
+                    vb.customize ["modifyvm", :id, "--memory", "4096"]
+            end
+
+        box.vm.provision "shell", inline: <<-SHELL
+        chmod +x /vagrant/proc_script.sh
+        /vagrant/proc_script.sh
+        echo -e "\n\Скрипт завершен!"
+        SHELL
+        end
+    end
+  end
