@@ -25,7 +25,10 @@ Vagrant.configure("2") do |config|
             end
 
         box.vm.provision "shell", inline: <<-SHELL
+        yum install strace -y
         chmod +x /vagrant/proc_script.sh
+
+        echo -e "\n\Начало работы скрипта!"
         /vagrant/proc_script.sh
         echo -e "\n\Скрипт завершен!"
         SHELL
