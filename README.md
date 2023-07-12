@@ -433,4 +433,42 @@ accsess.log - файл журнала.
 
 </details>
 
+## Lesson12 - Управление процессами
+
+<details>
+
+#### Выбраное заданиe:
+Написать свою реализацию ps ax используя анализ /proc
+
+
+![Image 1](lesson12/1.png)
+
+
+
+
+![Image 2](lesson12/2.png)
+
+
+![Image 3](lesson12/man_proc.png)
+
+Материалы:
+Vagrantfile c подключенным скриптом, который выводит при старте vagrant список процессов.
+proc_script.sh - скрипт
+
+
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
