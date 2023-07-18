@@ -578,7 +578,9 @@ lesson15$ cat web.yml
      - nginx
 
 5. Настраиваем переменную для порта nginx
-root@ lesson15$ cat roles/cat roles/nginx/vars/main.yml 
+
+root@ lesson15$ cat roles/nginx/vars/main.yml 
+
 ---
 vars file for roles/nginx
 nginx_listen_port: 8080
@@ -587,18 +589,24 @@ nginx_listen_port: 8080
 6. Задействуем переменную с помощью темплейтов
 
 root@ templates$ cat index.html.j2 
+
 Hi j2 is  Working ! {{ ansible_os_family }}
 ~                                            
 
 root@ templates$ cat nginx.conf.j2 
+
 events {
  worker_connections 1024;
 }
 http {
  server {
+ 
  listen {{ nginx_listen_port }} default_server;
+ 
  server_name default_server;
+ 
  root /usr/share/nginx/html;
+ 
  location / {
  }
  }
