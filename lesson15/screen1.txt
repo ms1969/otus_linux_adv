@@ -1,0 +1,16 @@
+#после установки ansible проверяем взаимодействие и версию
+
+root@ lesson15$ ansible ngansible nginx -m ping
+nginx | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+root@ lesson15$ ansible nginx -m command -a "uname -r"
+nginx | CHANGED | rc=0 >>
+3.10.0-1127.el7.x86_64
+root@ lesson15$ 
+
