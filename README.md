@@ -596,9 +596,12 @@ Hi j2 is  Working ! {{ ansible_os_family }}
 root@ templates$ cat nginx.conf.j2 
 
 events {
+ 
  worker_connections 1024;
 }
+
 http {
+
  server {
  
  listen {{ nginx_listen_port }} default_server;
