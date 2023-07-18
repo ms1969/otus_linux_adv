@@ -528,24 +528,39 @@ root@ lesson15$
 
 3. Создаем структуру для роли nginx
 
- tree roles/nginx/
 roles/nginx/
 ├── defaults
+
 │   └── main.yml
+
 ├── files
+
 ├── handlers
+
 │   └── main.yml
+
 ├── meta
+
 │   └── main.yml
+
 ├── README.md
+
 ├── tasks
+
 │   ├── main.yml
+
 │   └── redhat.yml
+
 ├── templates
+
 │   ├── index.html.j2
+
 │   └── nginx.conf.j2
+
 ├── tests
+
 │   ├── inventory
+
 │   └── test.yml
 └── vars
     └── main.yml
