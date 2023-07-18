@@ -493,12 +493,114 @@ ps ax
 5. Сайт должен слушать на нестандартном порту - 8080, для этого использовать переменные в Ansible.
 
 
+Выполнение:
+
+1. После установки ansible проводим предварительные настройки
+   создаем файл hosts и ansible.cfg
+
+root@ lesson15$ cat hosts
+[web]
+nginx ansible_host=127.0.0.1 ansible_port=2222 ansible_private_key_file=.vagrant/machines/nginx/virtualbox/private_key
+
+root@ lesson15$ cat ansible.cfg 
+[defaults]
+#inventory = staging/hosts
+inventory = hosts
+remote_user = vagrant
+host_key_checking = False
+retry_files_enabled = False
+
+2. Проверяем взаимодействие с управляемым хостом и просматриваем версию.
+
+root@ lesson15$ ansible ngansible nginx -m ping
+nginx | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+root@ lesson15$ ansible nginx -m command -a "uname -r"
+nginx | CHANGED | rc=0 >>
+3.10.0-1127.el7.x86_64
+root@ lesson15$ 
+
+3. Создаем структуру для роли nginx
+
+── defaults
+│   └── main.yml
+├── files
+├── handlers
+│   └── main.yml
+├── meta
+│   └── main.yml
+├── README.md
+├── tasks
+│   ├── main.yml
+│   └── redhat.yml
+├── templates
+│   ├── index.html.j2
+│   └── nginx.conf.j2
+├── tests
+│   ├── inventory
+│   └── test.yml
+└── vars
+    └── main.yml
+
+3. Создаём плейбук для роли web.yml
+
+root@ lesson15$ cat web.yml 
+---
+  - name: Install Nginx
+    hosts: nginx
+    become: yes
+
+    roles:
+     - nginx
+
+4. Настраиваем переменную для порта nginx
+root@ lesson15$ cat roles/cat roles/nginx/vars/main.yml 
+---
+# vars file for roles/nginx
+
+nginx_listen_port: 8080
+
+
+5. Задействуем переменную с помощью темплейтов
+
+root@ templates$ cat index.html.j2 
+Hi j2 is  Working ! {{ ansible_os_family }}
+~                                            
+
+root@ templates$ cat nginx.conf.j2 
+events {
+ worker_connections 1024;
+}
+http {
+ server {
+ listen {{ nginx_listen_port }} default_server;
+ server_name default_server;
+ root /usr/share/nginx/html;
+ location / {
+ }
+ }
+}
+
+6. Активируем секцию ansible в Vagrantfile и разворачиваем управляюмую машину с нуля.
+
 
 ![Image 1](lesson15/1.png)
 
 
+7. Проверяем работоспособность порта указаного в переменной
+
 
 ![Image 2](lesson15/2.png)
+
+
+Материалы включая структуру роли и Vagrantfile размещены в папке lesson15
+
 
 
 
