@@ -528,29 +528,32 @@ root@ lesson15$
 
 3. Создаем структуру для роли nginx
 
-── defaults
-│   └── main.yml
+ tree roles/nginx/
+roles/nginx/
+├── defaults
+│   └── main.yml
 ├── files
 ├── handlers
-│   └── main.yml
+│   └── main.yml
 ├── meta
-│   └── main.yml
+│   └── main.yml
 ├── README.md
 ├── tasks
-│   ├── main.yml
-│   └── redhat.yml
+│   ├── main.yml
+│   └── redhat.yml
 ├── templates
-│   ├── index.html.j2
-│   └── nginx.conf.j2
+│   ├── index.html.j2
+│   └── nginx.conf.j2
 ├── tests
-│   ├── inventory
-│   └── test.yml
+│   ├── inventory
+│   └── test.yml
 └── vars
     └── main.yml
 
-3. Создаём плейбук для роли web.yml
+4. Создаём плейбук для роли web.yml
 
-root@ lesson15$ cat web.yml 
+lesson15$ cat web.yml 
+
 ---
   - name: Install Nginx
     hosts: nginx
@@ -559,15 +562,14 @@ root@ lesson15$ cat web.yml
     roles:
      - nginx
 
-4. Настраиваем переменную для порта nginx
+5. Настраиваем переменную для порта nginx
 root@ lesson15$ cat roles/cat roles/nginx/vars/main.yml 
 ---
-# vars file for roles/nginx
-
+vars file for roles/nginx
 nginx_listen_port: 8080
 
 
-5. Задействуем переменную с помощью темплейтов
+6. Задействуем переменную с помощью темплейтов
 
 root@ templates$ cat index.html.j2 
 Hi j2 is  Working ! {{ ansible_os_family }}
@@ -587,13 +589,13 @@ http {
  }
 }
 
-6. Активируем секцию ansible в Vagrantfile и разворачиваем управляюмую машину с нуля.
+7. Активируем секцию ansible в Vagrantfile и разворачиваем управляюмую машину с нуля.
 
 
 ![Image 1](lesson15/1.png)
 
 
-7. Проверяем работоспособность порта указаного в переменной
+8. Проверяем работоспособность порта указаного в переменной
 
 
 ![Image 2](lesson15/2.png)
