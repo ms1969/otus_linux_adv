@@ -796,7 +796,11 @@ Jul 26 13:15:38 selinux nginx[22035]: nginx: configuration file /etc/nginx/nginx
 Jul 26 13:15:38 selinux systemd[1]: Started The nginx HTTP and reverse proxy server.
 
 ```
-![Image 2](lesson17/1.png)
+![Image 16](lesson17/1.png)
+
+
+# Способ №3 - с помощью модуля SELinux
+
 
 
 
