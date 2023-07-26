@@ -654,7 +654,7 @@ README с описанием каждого решения (скриншоты �
 
 Ход выполнения:
 
-#### Задание 1:
+
 Во время развёртывания стенда попытка запустить nginx завершится с ошибкой:
 
 selinux: ● nginx.service - The nginx HTTP and reverse proxy server
@@ -685,6 +685,28 @@ selinux: ● nginx.service - The nginx HTTP and reverse proxy server
     selinux: Jul 26 11:52:21 selinux systemd[1]: nginx.service failed.
 
 
+
+#### 1. Запуск nginx на нестандартном порту 3-мя разными способами:
+
+Сначала проверяем запущен ли firewall
+
+[vagrant@selinux ~]$ systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; disabled; vendor preset: enabled)
+   Active: inactive (dead)
+     Docs: man:firewalld(1)
+
+
+Также можно проверить, что конфигурация nginx настроена без ошибок: nginx -t
+
+[root@selinux ~]# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+Далее проверим режим работы SELinux: getenforce 
+
+[root@selinux ~]# getenforce 
+Enforcing
 
 
 
