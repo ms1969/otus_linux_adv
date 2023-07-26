@@ -630,22 +630,52 @@ http {
 Материалы включая структуру роли и Vagrantfile размещены в папке lesson15
 
 
+</details>
+
+
+## Lesson17 - SELinux
+
+<details>
+
+Описание домашнего задания
+1. Запустить nginx на нестандартном порту 3-мя разными способами:
+переключатели setsebool;
+добавление нестандартного порта в имеющийся тип;
+формирование и установка модуля SELinux.
+К сдаче:
+README с описанием каждого решения (скриншоты и демонстрация приветствуются). 
+
+2. Обеспечить работоспособность приложения при включенном selinux.
+развернуть приложенный стенд https://github.com/mbfx/otus-linux-adm/tree/master/selinux_dns_problems; 
+выяснить причину неработоспособности механизма обновления зоны (см. README);
+предложить решение (или решения) для данной проблемы;
+выбрать одно из решений для реализации, предварительно обосновав выбор;
+реализовать выбранное решение и продемонстрировать его работоспособность
+
+
+Во время развёртывания стенда попытка запустить nginx завершится с ошибкой:
+
+selinux: ● nginx.service - The nginx HTTP and reverse proxy server
+    selinux:    Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+    selinux:    Active: failed (Result: exit-code) since Wed 2023-07-26 11:52:21 UTC; 7ms ago
+    selinux:   Process: 2982 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=1/FAILURE)
+    selinux:   Process: 2981 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+    selinux: 
+    selinux: Jul 26 11:52:21 selinux systemd[1]: Starting The nginx HTTP and reverse proxy server...
+    selinux: Jul 26 11:52:21 selinux nginx[2982]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    selinux: Jul 26 11:52:21 selinux nginx[2982]: nginx: [emerg] bind() to 0.0.0.0:4881 failed (13: Permission denied)
+    selinux: Jul 26 11:52:21 selinux nginx[2982]: nginx: configuration file /etc/nginx/nginx.conf test failed
+    selinux: Jul 26 11:52:21 selinux systemd[1]: nginx.service: control process exited, code=exited status=1
+    selinux: Jul 26 11:52:21 selinux systemd[1]: Failed to start The nginx HTTP and reverse proxy server.
+    selinux: Jul 26 11:52:21 selinux systemd[1]: Unit nginx.service entered failed state.
+    selinux: Jul 26 11:52:21 selinux systemd[1]: nginx.service failed.
+
+
+
 
 
 
 </details>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
