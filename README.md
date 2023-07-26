@@ -656,7 +656,7 @@ README с описанием каждого решения (скриншоты �
 
 
 Во время развёртывания стенда попытка запустить nginx завершится с ошибкой:
-
+```
 selinux: ● nginx.service - The nginx HTTP and reverse proxy server
 
     selinux:    Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
@@ -683,30 +683,52 @@ selinux: ● nginx.service - The nginx HTTP and reverse proxy server
     selinux: Jul 26 11:52:21 selinux systemd[1]: Unit nginx.service entered failed state.
     
     selinux: Jul 26 11:52:21 selinux systemd[1]: nginx.service failed.
-
+```
 
 
 #### 1. Запуск nginx на нестандартном порту 3-мя разными способами:
 
 Сначала проверяем запущен ли firewall
-
+```
 [vagrant@selinux ~]$ systemctl status firewalld
 ● firewalld.service - firewalld - dynamic firewall daemon
    Loaded: loaded (/usr/lib/systemd/system/firewalld.service; disabled; vendor preset: enabled)
    Active: inactive (dead)
      Docs: man:firewalld(1)
-
+```
 
 Также можно проверить, что конфигурация nginx настроена без ошибок: nginx -t
-
+```
 [root@selinux ~]# nginx -t
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
-
+```
 Далее проверим режим работы SELinux: getenforce 
-
+```
 [root@selinux ~]# getenforce 
+
 Enforcing
+```
+Разрешим в SELinux работу nginx на порту TCP 4881 c помощью переключателей setsebool
+
+Запускаем audit2why и анализируем лог:
+```
+[root@selinux ~]# audit2why < /var/log/audit/audit.log
+
+type=AVC msg=audit(1690372341.482:866): avc:  denied  { name_bind } for  pid=2982 comm="nginx" src=4881 scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:object_r:unreserved_port_t:s0 
+
+tclass=tcp_socket permissive=0
+
+	Was caused by:
+	The boolean nis_enabled was set incorrectly. 
+	Description:
+	Allow nis to enabled
+
+	Allow access by executing:
+	# setsebool -P nis_enabled 1
+```
+Выполняем setsebool -P nis_enabled 1
+
 
 
 
