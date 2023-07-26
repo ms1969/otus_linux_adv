@@ -642,8 +642,6 @@ http {
 переключатели setsebool;
 добавление нестандартного порта в имеющийся тип;
 формирование и установка модуля SELinux.
-К сдаче:
-README с описанием каждого решения (скриншоты и демонстрация приветствуются). 
 
 2. Обеспечить работоспособность приложения при включенном selinux.
 развернуть приложенный стенд https://github.com/mbfx/otus-linux-adm/tree/master/selinux_dns_problems; 
@@ -688,6 +686,7 @@ selinux: ● nginx.service - The nginx HTTP and reverse proxy server
 
 #### 1. Запуск nginx на нестандартном порту 3-мя разными способами:
 
+## Способ №1 - setsebool
 Сначала проверяем запущен ли firewall
 ```
 [vagrant@selinux ~]$ systemctl status firewalld
@@ -753,7 +752,51 @@ Jul 26 13:01:49 selinux nginx[21996]: nginx: configuration file /etc/nginx/nginx
 Jul 26 13:01:49 selinux systemd[1]: Started The nginx HTTP and reverse proxy server.
 ```
 
+## Способ №2 - semanage port
 
+Выводим командой список допустимых для http портов:
+```
+[root@selinux ~]# semanage port -l | grep http
+http_cache_port_t              tcp      8080, 8118, 8123, 10001-10010
+http_cache_port_t              udp      3130
+http_port_t                    tcp      80, 81, 443, 488, 8008, 8009, 8443, 9000
+pegasus_http_port_t            tcp      5988
+pegasus_https_port_t           tcp      5989
+```
+Порт 4881 отсутствует в списке.
+Добавляем порт в список разрешенных, перезапускаем сервис, проверяем что порт появился в разрешенных
+```
+[root@selinux ~]# semanage port -a -t http_port_t -p tcp 4881
+[root@selinux ~]# systemctl restart nginx.service 
+[root@selinux ~]# semanage port -l | grep http
+http_cache_port_t              tcp      8080, 8118, 8123, 10001-10010
+http_cache_port_t              udp      3130
+http_port_t                    tcp      4881, 80, 81, 443, 488, 8008, 8009, 8443, 9000
+pegasus_http_port_t            tcp      5988
+pegasus_https_port_t           tcp      5989
+```
+Проверяем статус сервиса:
+```
+[root@selinux ~]# systemctl status nginx.service 
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+   Active: active (running) since Wed 2023-07-26 13:15:38 UTC; 55s ago
+  Process: 22037 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 22035 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+  Process: 22034 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 22039 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─22039 nginx: master process /usr/sbin/nginx
+           └─22041 nginx: worker process
+
+Jul 26 13:15:38 selinux systemd[1]: Stopped The nginx HTTP and reverse proxy server.
+Jul 26 13:15:38 selinux systemd[1]: Starting The nginx HTTP and reverse proxy server...
+Jul 26 13:15:38 selinux nginx[22035]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+Jul 26 13:15:38 selinux nginx[22035]: nginx: configuration file /etc/nginx/nginx.conf test is successful
+Jul 26 13:15:38 selinux systemd[1]: Started The nginx HTTP and reverse proxy server.
+
+```
+![Image 2](lesson17/1.png)
 
 
 
