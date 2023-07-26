@@ -727,9 +727,22 @@ tclass=tcp_socket permissive=0
 	Allow access by executing:
 	# setsebool -P nis_enabled 1
 ```
-Выполняем setsebool -P nis_enabled 1
+Выполняем setsebool:
+```
+[root@selinux ~]# setsebool -P nis_enabled 1
 
+```
+Проверяем запустился ли nginx:
+```
+[root@selinux ~]# grep 1690372341.482:866 /var/log/audit/audit.log | audit2why
+type=AVC msg=audit(1690372341.482:866): avc:  denied  { name_bind } for  pid=2982 comm="nginx" src=4881 scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:object_r:unreserved_port_t:s0 tclass=tcp_socket permissive=0
 
+	Was caused by:
+		Unknown - would be allowed by active policy
+		Possible mismatch between this policy and the one under which the audit message was generated.
+
+		Possible mismatch between current in-memory boolean settings vs. permanent ones.
+```
 
 
 
