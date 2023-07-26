@@ -734,15 +734,26 @@ tclass=tcp_socket permissive=0
 ```
 Проверяем запустился ли nginx:
 ```
-[root@selinux ~]# grep 1690372341.482:866 /var/log/audit/audit.log | audit2why
-type=AVC msg=audit(1690372341.482:866): avc:  denied  { name_bind } for  pid=2982 comm="nginx" src=4881 scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:object_r:unreserved_port_t:s0 tclass=tcp_socket permissive=0
+[root@selinux ~]# systemctl start nginx
+[root@selinux ~]# systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+   Active: active (running) since Wed 2023-07-26 13:01:49 UTC; 38s ago
+  Process: 21998 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 21996 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+  Process: 21995 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 22000 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─22000 nginx: master process /usr/sbin/nginx
+           └─22002 nginx: worker process
 
-	Was caused by:
-		Unknown - would be allowed by active policy
-		Possible mismatch between this policy and the one under which the audit message was generated.
-
-		Possible mismatch between current in-memory boolean settings vs. permanent ones.
+Jul 26 13:01:49 selinux systemd[1]: Starting The nginx HTTP and reverse proxy server...
+Jul 26 13:01:49 selinux nginx[21996]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+Jul 26 13:01:49 selinux nginx[21996]: nginx: configuration file /etc/nginx/nginx.conf test is successful
+Jul 26 13:01:49 selinux systemd[1]: Started The nginx HTTP and reverse proxy server.
 ```
+
+
 
 
 
