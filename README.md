@@ -866,6 +866,75 @@ Jul 26 14:42:11 selinux systemd[1]: Started The nginx HTTP and reverse proxy ser
 
 
 #### 2. Обеспечить работоспособность приложения при включенном selinux.
+Подключаемся к машине клиент.
+```
+root@ selinux_dns_problems$ vagrant ssh client 
+Last login: Wed Jul 26 15:32:43 2023 from 10.0.2.2
+###############################
+### Welcome to the DNS lab! ###
+###############################
+
+- Use this client to test the enviroment
+- with dig or nslookup. Ex:
+    dig @192.168.50.10 ns01.dns.lab
+
+- nsupdate is available in the ddns.lab zone. Ex:
+    nsupdate -k /etc/named.zonetransfer.key
+    server 192.168.50.10
+    zone ddns.lab 
+    update add www.ddns.lab. 60 A 192.168.50.15
+    send
+
+- rndc is also available to manage the servers
+    rndc -c ~/rndc.conf reload
+
+###############################
+### Enjoy! ####################
+###############################
+```
+Пробуем сделать запись в зоне 
+```
+[root@client ~]# nsupdate -k /etc/named.zonetransfer.key
+> server 192.168.50.10
+> zone ddns.lab
+> update add www.ddns.lab. 60 A 192.168.50.15
+> sent
+incorrect section name: sent
+> send
+update failed: SERVFAIL
+> quit
+```
+В результате получаем ошибку.
+
+Проверяем файл аудита на клиенте
+```
+[root@client ~]# cat /var/log/audit/audit.log | audit2why
+[root@client ~]# 
+```
+Ошибки на клиенте отсутствуют.
+Идем на сервер и проверяем лог selinux
+```
+root@ selinux_dns_problems$ vagrant ssh ns01
+Last login: Wed Jul 26 15:30:50 2023 from 10.0.2.2
+[vagrant@ns01 ~]$
+[vagrant@ns01 ~]$ sudo -i
+[root@ns01 ~]# cat /var/log/audit/audit.log | audit2why
+type=AVC msg=audit(1690386368.052:1945): avc:  denied  { create } for  pid=5223 comm="isc-worker0000" name="named.ddns.lab.view1.jnl" scontext=system_u:system_r:named_t:s0 tcontext=system_u:object_r:etc_t:s0 tclass=file permissive=0
+
+	Was caused by:
+		Missing type enforcement (TE) allow rule.
+
+		You can use audit2allow to generate a loadable module to allow this access.
+
+```
+В логах мы видим, что ошибка в контексте безопасности. Вместо типа named_t используется тип etc_t.
+Проверим данную проблему в каталоге /etc/named:
+
+![Image 18](lesson17/3.png)
+
+
+
+
 
 
 
