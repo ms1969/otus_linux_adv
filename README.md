@@ -799,7 +799,38 @@ Jul 26 13:15:38 selinux systemd[1]: Started The nginx HTTP and reverse proxy ser
 ![Image 16](lesson17/1.png)
 
 
-# Способ №3 - с помощью модуля SELinux
+## Способ №3 - с помощью модуля SELinux
+
+Вернемся к исходному состоянию и убедимся что nginx опять не запускается:
+```
+root@selinux ~]# semanage port -d -t http_port_t -p tcp 4881
+[root@selinux ~]# semanage port -l | grep  http_port_t
+http_port_t                    tcp      80, 81, 443, 488, 8008, 8009, 8443, 9000
+pegasus_http_port_t            tcp      5988
+[root@selinux ~]# systemctl restart nginx
+Job for nginx.service failed because the control process exited with error code. See "systemctl status nginx.service" and "journalctl -xe" for details.
+[root@selinux ~]# systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+   Active: failed (Result: exit-code) since Wed 2023-07-26 14:33:18 UTC; 26s ago
+  Process: 22086 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 22107 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=1/FAILURE)
+  Process: 22106 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 22088 (code=exited, status=0/SUCCESS)
+
+Jul 26 14:33:18 selinux systemd[1]: Stopped The nginx HTTP and reverse proxy server.
+Jul 26 14:33:18 selinux systemd[1]: Starting The nginx HTTP and reverse proxy server...
+Jul 26 14:33:18 selinux nginx[22107]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+Jul 26 14:33:18 selinux nginx[22107]: nginx: [emerg] bind() to 0.0.0.0:4881 failed (13: Permission denied)
+Jul 26 14:33:18 selinux nginx[22107]: nginx: configuration file /etc/nginx/nginx.conf test failed
+Jul 26 14:33:18 selinux systemd[1]: nginx.service: control process exited, code=exited status=1
+Jul 26 14:33:18 selinux systemd[1]: Failed to start The nginx HTTP and reverse proxy server.
+Jul 26 14:33:18 selinux systemd[1]: Unit nginx.service entered failed state.
+Jul 26 14:33:18 selinux systemd[1]: nginx.service failed.
+```
+
+
+
 
 
 
