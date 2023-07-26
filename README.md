@@ -938,12 +938,58 @@ type=AVC msg=audit(1690386368.052:1945): avc:  denied  { create } for  pid=5223 
 ![Image 19](lesson17/4.png)
 
 
+Изменим тип контекста безопасности для каталога /etc/named:
+```
+[root@ns01 ~]# chcon -R -t named_zone_t /etc/named
+[root@ns01 ~]# ls -laZ /etc/named
+drw-rwx---. root named system_u:object_r:named_zone_t:s0 .
+drwxr-xr-x. root root  system_u:object_r:etc_t:s0       ..
+drw-rwx---. root named unconfined_u:object_r:named_zone_t:s0 dynamic
+-rw-rw----. root named system_u:object_r:named_zone_t:s0 named.50.168.192.rev
+-rw-rw----. root named system_u:object_r:named_zone_t:s0 named.dns.lab
+-rw-rw----. root named system_u:object_r:named_zone_t:s0 named.dns.lab.view1
+-rw-rw----. root named system_u:object_r:named_zone_t:s0 named.newdns.lab
+[root@ns01 ~]# 
+```
+Попробуем снова внести изменения с клиента: 
+![Image 20](lesson17/5.png)
 
+Видим, что изменения применились. Попробуем перезагрузить хосты и ещё раз сделать запрос с помощью dig: 
+Перегружаем хосты и еще раз делаем запрос.
+```
+[root@client ~]# dig @192.168.50.10 www.ddns.lab
 
+; <<>> DiG 9.11.4-P2-RedHat-9.11.4-26.P2.el7_9.13 <<>> @192.168.50.10 www.ddns.lab
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 55761
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 2
 
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;www.ddns.lab.			IN	A
 
+;; ANSWER SECTION:
+www.ddns.lab.		60	IN	A	192.168.50.15
 
+;; AUTHORITY SECTION:
+ddns.lab.		3600	IN	NS	ns01.dns.lab.
 
+;; ADDITIONAL SECTION:
+ns01.dns.lab.		3600	IN	A	192.168.50.10
+
+;; Query time: 0 msec
+;; SERVER: 192.168.50.10#53(192.168.50.10)
+;; WHEN: Wed Jul 26 16:20:14 UTC 2023
+;; MSG SIZE  rcvd: 96
+
+[root@client ~]# 
+```
+Изменения сохранились!
+
+### Проблема с обновлением зоны была в том, что Selinux блокировал доступ к файлам динамического обновления для DNS сервера.
 
 
 </details>
