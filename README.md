@@ -828,6 +828,44 @@ Jul 26 14:33:18 selinux systemd[1]: Failed to start The nginx HTTP and reverse p
 Jul 26 14:33:18 selinux systemd[1]: Unit nginx.service entered failed state.
 Jul 26 14:33:18 selinux systemd[1]: nginx.service failed.
 ```
+Подготавливаем модуль.
+
+```
+[root@selinux ~]# audit2allow -M httpd_add --debug < /var/log/audit/audit.log
+******************** IMPORTANT ***********************
+To make this policy package active, execute:
+
+semodule -i httpd_add.pp
+```
+Устанавливаем модуль
+```
+[root@selinux ~]# semodule -i httpd_add.pp
+[root@selinux ~]# semodule -l | grep http
+httpd_add	1.0
+```
+Рестартуем nginx и проверяем статус
+```
+[root@selinux ~]# systemctl status nginx.service
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+   Active: active (running) since Wed 2023-07-26 14:42:11 UTC; 16s ago
+  Process: 22143 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 22141 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+  Process: 22140 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 22145 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─22145 nginx: master process /usr/sbin/nginx
+           └─22148 nginx: worker process
+
+Jul 26 14:42:11 selinux systemd[1]: Starting The nginx HTTP and reverse proxy server...
+Jul 26 14:42:11 selinux nginx[22141]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+Jul 26 14:42:11 selinux nginx[22141]: nginx: configuration file /etc/nginx/nginx.conf test is successful
+Jul 26 14:42:11 selinux systemd[1]: Started The nginx HTTP and reverse proxy server.
+```
+![Image 17](lesson17/2.png)
+
+
+#### 2. Обеспечить работоспособность приложения при включенном selinux.
 
 
 
