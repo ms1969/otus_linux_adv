@@ -1012,6 +1012,101 @@ ns01.dns.lab.		3600	IN	A	192.168.50.10
 
 #### Выполнение 1-го задания
 
+Создаем Dockerfile:
+```
+root@ lesson18$ cat Dockerfile 
+FROM alpine:latest
+
+RUN apk update && apk upgrade && apk add nginx && apk add bash
+
+EXPOSE 80
+
+COPY nginx_cfg/default.conf /etc/nginx/http.d/
+COPY nginx_cfg/index.html /var/www/default/html/
+
+CMD ["nginx", "-g", "daemon off;"]
+
+```
+Создаем файл конфигурации, который будет помещен в образ и файл index
+
+```
+root@ lesson18$ cat nginx_cfg/default.conf 
+server {
+   listen 80 default_server;
+
+   root /var/www/default/html;
+   index index.html index.htm;
+
+   server_name otus;
+
+   location / {
+       try_files $uri $uri/ =404;
+   }
+}
+root@ lesson18$ cat nginx_cfg/index.html 
+Happy otus Docker!!!
+
+```
+
+Создаем Docker image
+
+```
+root@ lesson18$ docker build -t alpine_nginx .
+Sending build context to Docker daemon  4.608kB
+Step 1/6 : FROM alpine:latest
+latest: Pulling from library/alpine
+31e352740f53: Pull complete 
+Digest: sha256:82d1e9d7ed48a7523bdebc18cf6290bdb97b82302a8a9c27d4fe885949ea94d1
+Status: Downloaded newer image for alpine:latest
+ ---> c1aabb73d233
+Step 2/6 : RUN apk update && apk upgrade && apk add nginx && apk add bash
+ ---> Running in 14d6ae5c632b
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86_64/APKINDEX.tar.gz
+v3.18.2-549-g9d5cc4f162f [https://dl-cdn.alpinelinux.org/alpine/v3.18/main]
+v3.18.2-550-g63ae2715564 [https://dl-cdn.alpinelinux.org/alpine/v3.18/community]
+OK: 20070 distinct packages available
+(1/7) Upgrading musl (1.2.4-r0 -> 1.2.4-r1)
+(2/7) Upgrading busybox (1.36.1-r0 -> 1.36.1-r2)
+Executing busybox-1.36.1-r2.post-upgrade
+(3/7) Upgrading busybox-binsh (1.36.1-r0 -> 1.36.1-r2)
+(4/7) Upgrading libcrypto3 (3.1.1-r1 -> 3.1.1-r3)
+(5/7) Upgrading libssl3 (3.1.1-r1 -> 3.1.1-r3)
+(6/7) Upgrading ssl_client (1.36.1-r0 -> 1.36.1-r2)
+(7/7) Upgrading musl-utils (1.2.4-r0 -> 1.2.4-r1)
+Executing busybox-1.36.1-r2.trigger
+OK: 7 MiB in 15 packages
+(1/2) Installing pcre (8.45-r3)
+(2/2) Installing nginx (1.24.0-r6)
+Executing nginx-1.24.0-r6.pre-install
+Executing nginx-1.24.0-r6.post-install
+Executing busybox-1.36.1-r2.trigger
+OK: 9 MiB in 17 packages
+(1/4) Installing ncurses-terminfo-base (6.4_p20230506-r0)
+(2/4) Installing libncursesw (6.4_p20230506-r0)
+(3/4) Installing readline (8.2.1-r1)
+(4/4) Installing bash (5.2.15-r5)
+Executing bash-5.2.15-r5.post-install
+Executing busybox-1.36.1-r2.trigger
+OK: 11 MiB in 21 packages
+Removing intermediate container 14d6ae5c632b
+ ---> 621daeb135d0
+Step 3/6 : EXPOSE 80
+ ---> Running in 1f393d66aa76
+Removing intermediate container 1f393d66aa76
+ ---> 4fcfc2aa9636
+Step 4/6 : COPY nginx_cfg/default.conf /etc/nginx/http.d/
+ ---> 16f521aa1a71
+Step 5/6 : COPY nginx_cfg/index.html /var/www/default/html/
+ ---> 1af5663777f8
+Step 6/6 : CMD ["nginx", "-g", "daemon off;"]
+ ---> Running in 1447b003af71
+Removing intermediate container 1447b003af71
+ ---> 5670ef54bdf0
+Successfully built 5670ef54bdf0
+Successfully tagged alpine_nginx:latest
+
+```
 
 
 </details>
