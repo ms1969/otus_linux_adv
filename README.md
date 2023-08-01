@@ -1107,6 +1107,35 @@ Successfully built 5670ef54bdf0
 Successfully tagged alpine_nginx:latest
 
 ```
+Проверяем, как создался образ
+
+```
+root@ lesson18$ docker images
+REPOSITORY     TAG       IMAGE ID       CREATED         SIZE
+alpine_nginx   latest    5670ef54bdf0   7 minutes ago   19.3MB
+alpine         latest    c1aabb73d233   6 weeks ago     7.33MB
+
+```
+Запускаем
+```
+root@ lesson18$ docker run -d --name nginx_container -p 8080:80 alpine_nginx
+0021b3e308b9cd629ed2f8d1a0b182903c0bd4a1f91c8fd6273cc2e5b3eb7713
+```
+Проверяем, что контейнер работает
+
+```
+root@ lesson18$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED              STATUS              PORTS                                   NAMES
+0021b3e308b9   alpine_nginx   "nginx -g 'daemon of…"   About a minute ago   Up About a minute   0.0.0.0:8080->80/tcp, :::8080->80/tcp   nginx_container
+
+```
+Тестируем отображение страницы:
+
+```
+root@ lesson18$ curl localhost:8080
+Happy otus Docker!!!
+```
+
 
 
 </details>
