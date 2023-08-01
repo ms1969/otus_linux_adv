@@ -1147,9 +1147,24 @@ Happy otus Docker!!!
 
 Т.к контейнер использует ядро системы, то такой контейнер работать не будет, при этом собрать ядро возможно.
 
-#### Ссылка к 4-му заданию на dockerhub
+#### 4-е задание (размещение образа на dockerhub)
+Загрузка образа на dockerhub
+```
+root@ lesson18$ docker push ms1969/alpine_nginx
+Using default tag: latest
+The push refers to repository [docker.io/ms1969/alpine_nginx]
+678a0a013fa1: Pushed 
+7d424dd3c294: Pushed 
+b8a26a078ec9: Pushed 
+78a822fe2a2d: Mounted from library/alpine 
+latest: digest: sha256:f230b81b5ae478154f7b4d53e2ff5d2f65e4ade34fbbdc3954e01285e34701dd size: 1153
 
+```
+Ссылка на образ
 
+https://hub.docker.com/layers/ms1969/alpine_nginx/latest/images/sha256-f230b81b5ae478154f7b4d53e2ff5d2f65e4ade34fbbdc3954e01285e34701dd?context=repo
+
+#### Файлы Dockerfile, index.html, default.conf размещены в папке lesson18
 
 </details>
 
