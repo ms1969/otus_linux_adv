@@ -1188,20 +1188,22 @@ Vagrantfile находиться в папке lesson22.
 
 ![Image 22](lesson22/2.png)
 
+Проверим, что созданные пользователи могут зайти в систему
+
+![Image 22](lesson22/4.png)
+
+
+
+
 ![Image 22](lesson22/3.png)
 
 
 с настройка PAM отредактирован.
 
 
-![Image 22](lesson22/1.png)
-
-![Image 22](lesson22/2.png)
-
-![Image 22](lesson22/3.png)
 
 
-![Image 22](lesson22/4.png)
+
 
 ![Image 22](lesson22/5.png)
 
