@@ -1201,6 +1201,7 @@ Vagrantfile находиться в папке lesson22.
 
 ![Image 22](lesson22/5.png)
 
+По результатам видим, что otus зайти не может, а otusadm заходит в систему.
 
 </details>
 
