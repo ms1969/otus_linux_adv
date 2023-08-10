@@ -1356,6 +1356,93 @@ cat /var/log/rsyslog/web/nginx_error.log
 ![Image 24](lesson24/3.png)
 
 
+Настраиваем аудит файла nginx.conf
+```
+root@web ~]# rpm -qa | grep audit
+audit-2.8.5-4.el7.x86_64
+audit-libs-2.8.5-4.el7.x86_64
+```
+Для контроля записи (w) и атрибутов (a) В файл /etc/audit/rules.d/audit.rules
+добавляем строки:
+
+-w /etc/nginx/nginx.conf -p wa -k web_config_changed
+-w /etc/nginx/conf.d/ -p wa -k web_config_changed
+
+```
+[root@web ~]# cat /etc/audit/rules.d/audit.rules
+## First rule - delete all
+-D
+
+## Increase the buffers to survive stress events.
+## Make this bigger for busy systems
+-b 8192
+
+## Set failure mode to syslog
+-f 1
+
+-w /etc/nginx/nginx.conf -p wa -k web_config_changed
+-w /etc/nginx/conf.d/ -p wa -k web_config_changed
+```
+Перезапускаем службу
+```
+[root@web ~]# service auditd restart
+Stopping logging:                                          [  OK  ]
+Redirecting start to /bin/systemctl start auditd.service
+```
+Вносим изменение в /etc/nginx/nginx.conf чтобы проверить
+
+Проверяем
+```
+ausearch -f /etc/nginx/nginx.conf 
+----
+time->Thu Aug 10 18:13:00 2023
+type=CONFIG_CHANGE msg=audit(1691680380.345:1148): auid=1000 ses=5 op=updated_rules path="/etc/nginx/nginx.conf" key="web_config_changed" list=4 res=1
+----
+time->Thu Aug 10 18:13:00 2023
+type=PROCTITLE msg=audit(1691680380.345:1149): proctitle=76696D002F6574632F6E67696E782F6E67696E782E636F6E66
+type=PATH msg=audit(1691680380.345:1149): item=3 name="/etc/nginx/nginx.conf~" inode=749061 dev=08:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 obj=system_u:object_r:httpd_config_t:s0 objtype=CREATE cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+type=PATH msg=audit(1691680380.345:1149): item=2 name="/etc/nginx/nginx.conf" inode=749061 dev=08:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 obj=system_u:object_r:httpd_config_t:s0 objtype=DELETE cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+type=PATH msg=audit(1691680380.345:1149): item=1 name="/etc/nginx/" inode=85 dev=08:01 mode=040755 ouid=0 ogid=0 rdev=00:00 obj=system_u:object_r:httpd_config_t:s0 objtype=PARENT cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+type=PATH msg=audit(1691680380.345:1149): item=0 name="/etc/nginx/" inode=85 dev=08:01 mode=040755 ouid=0 ogid=0 rdev=00:00 obj=system_u:object_r:httpd_config_t:s0 objtype=PARENT cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+type=CWD msg=audit(1691680380.345:1149):  cwd="/root"
+type=SYSCALL msg=audit(1691680380.345:1149): arch=c000003e syscall=82 success=yes exit=0 a0=1dc3170 a1=1f92360 a2=fffffffffffffe80 a3=7ffd701ecfa0 items=4 ppid=3735 pid=24640 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=5 comm="vim" exe="/usr/bin/vim" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key="web_config_changed"
+----
+time->Thu Aug 10 18:13:00 2023
+type=CONFIG_CHANGE msg=audit(1691680380.345:1150): auid=1000 ses=5 op=updated_rules path="/etc/nginx/nginx.conf" key="web_config_changed" list=4 res=1
+----
+time->Thu Aug 10 18:13:00 2023
+type=PROCTITLE msg=audit(1691680380.345:1151): proctitle=76696D002F6574632F6E67696E782F6E67696E782E636F6E66
+type=PATH msg=audit(1691680380.345:1151): item=1 name="/etc/nginx/nginx.conf" inode=749076 dev=08:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 obj=unconfined_u:object_r:httpd_config_t:s0 objtype=CREATE cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+type=PATH msg=audit(1691680380.345:1151): item=0 name="/etc/nginx/" inode=85 dev=08:01 mode=040755 ouid=0 ogid=0 rdev=00:00 obj=system_u:object_r:httpd_config_t:s0 objtype=PARENT cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+type=CWD msg=audit(1691680380.345:1151):  cwd="/root"
+type=SYSCALL msg=audit(1691680380.345:1151): arch=c000003e syscall=2 success=yes exit=3 a0=1dc3170 a1=241 a2=1a4 a3=0 items=2 ppid=3735 pid=24640 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=5 comm="vim" exe="/usr/bin/vim" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key="web_config_changed"
+----
+time->Thu Aug 10 18:13:00 2023
+type=PROCTITLE msg=audit(1691680380.348:1152): proctitle=76696D002F6574632F6E67696E782F6E67696E782E636F6E66
+type=PATH msg=audit(1691680380.348:1152): item=0 name="/etc/nginx/nginx.conf" inode=749076 dev=08:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 obj=unconfined_u:object_r:httpd_config_t:s0 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+type=CWD msg=audit(1691680380.348:1152):  cwd="/root"
+type=SYSCALL msg=audit(1691680380.348:1152): arch=c000003e syscall=188 success=yes exit=0 a0=1dc3170 a1=7fa9ee7acf6a a2=1f92e10 a3=24 items=1 ppid=3735 pid=24640 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=5 comm="vim" exe="/usr/bin/vim" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key="web_config_changed"
+----
+time->Thu Aug 10 18:13:00 2023
+type=PROCTITLE msg=audit(1691680380.348:1153): proctitle=76696D002F6574632F6E67696E782F6E67696E782E636F6E66
+type=PATH msg=audit(1691680380.348:1153): item=0 name="/etc/nginx/nginx.conf" inode=749076 dev=08:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 obj=system_u:object_r:httpd_config_t:s0 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+type=CWD msg=audit(1691680380.348:1153):  cwd="/root"
+type=SYSCALL msg=audit(1691680380.348:1153): arch=c000003e syscall=90 success=yes exit=0 a0=1dc3170 a1=81a4 a2=7ffd701ee610 a3=24 items=1 ppid=3735 pid=24640 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=5 comm="vim" exe="/usr/bin/vim" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key="web_config_changed"
+----
+time->Thu Aug 10 18:13:00 2023
+type=PROCTITLE msg=audit(1691680380.348:1154): proctitle=76696D002F6574632F6E67696E782F6E67696E782E636F6E66
+type=PATH msg=audit(1691680380.348:1154): item=0 name="/etc/nginx/nginx.conf" inode=749076 dev=08:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 obj=system_u:object_r:httpd_config_t:s0 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+type=CWD msg=audit(1691680380.348:1154):  cwd="/root"
+type=SYSCALL msg=audit(1691680380.348:1154): arch=c000003e syscall=188 success=yes exit=0 a0=1dc3170 a1=7fa9ee362e2f a2=1f92300 a3=1c items=1 ppid=3735 pid=24640 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=5 comm="vim" exe="/usr/bin/vim" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key="web_config_changed"
+
+```
+
+![Image 25](lesson24/4.png)
+
+
+
+
+
 
 
 
