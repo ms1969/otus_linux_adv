@@ -1288,6 +1288,8 @@ $template RemoteLogs,"/var/log/rsyslog/%HOSTNAME%/%PROGRAMNAME%.log"
 
 ```
 
+Рестартуем syslog и проверяем, что порты 514 открыты:
+
 
 
 
