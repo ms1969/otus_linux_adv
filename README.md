@@ -1226,7 +1226,69 @@ Vagrantfile находиться в папке lesson22.
 
 #### Ход выполнения:
 
-1. 
+Создаем Vagrantfile
+
+```
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2048
+    v.cpus = 2
+  end
+
+  config.vm.define "web" do |web|
+    web.vm.network "private_network", ip: "192.168.56.10"
+    web.vm.hostname = "web"
+    web.vm.provision "shell", path: "web.sh"
+  end
+
+  config.vm.define "log" do |log|
+    log.vm.network "private_network", ip: "192.168.56.15"
+    log.vm.hostname = "log"
+    log.vm.provision "shell", path: "log.sh"
+  end
+
+end
+
+```
+web server nginx 192.168.56.10 
+log server 192.168.56.15
+
+В скриптах web.sh и log.sh производиться первоначальная настройка и установка серверов,
+Копии файлов скриптов приведены в папке lesson24.
+
+На машине log в файле /etc/rsyslog.conf убираем коментарии для открытия TCP и UDP порта 514
+
+В конец файла /etc/rsyslog.conf добавляем правила приёма сообщений от хостов.
+
+```
+# The imjournal module bellow is now used as a message source instead of imuxsock.
+$ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
+$ModLoad imjournal # provides access to the systemd journal
+#$ModLoad imklog # reads kernel messages (the same are read from journald)
+#$ModLoad immark  # provides --MARK-- message capability
+
+# Provides UDP syslog reception
+$ModLoad imudp
+$UDPServerRun 514
+
+# Provides TCP syslog reception
+$ModLoad imtcp
+$InputTCPServerRun 514
+.................
+
+
+$template RemoteLogs,"/var/log/rsyslog/%HOSTNAME%/%PROGRAMNAME%.log"
+*.* ?RemoteLogs
+& ~
+
+```
+
+
 
 
 
