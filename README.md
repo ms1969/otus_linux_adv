@@ -1290,6 +1290,73 @@ $template RemoteLogs,"/var/log/rsyslog/%HOSTNAME%/%PROGRAMNAME%.log"
 
 Рестартуем syslog и проверяем, что порты 514 открыты:
 
+![Image 22](lesson24/1.png)
+
+
+Проверяем версию nginx
+
+```
+[vagrant@web ~]$ rpm -qa | grep nginx
+nginx-1.20.1-10.el7.x86_64
+nginx-filesystem-1.20.1-10.el7.noarch
+[vagrant@web ~]$ 
+
+```
+
+На машине web корректируем /etc/nginx/nginx.conf
+
+error_log /var/log/nginx/error.log;
+access_log  syslog:server=192.168.56.15:514,tag=nginx_access,severity=info combined;
+access_log syslog:server=192.168.56.15:514,tag=nginx_access main;
+error_log syslog:server=192.168.56.15:514,tag=nginx_error notice;
+
+Проверяем правильность конфигурации:
+```
+[root@web ~]# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+Перезппускаем сервис и проверяем его статус:
+
+```
+[root@web ~]# systemctl restart nginx
+[root@web ~]# systemctl status nginx.service 
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2023-08-10 17:29:21 MSK; 17s ago
+  Process: 24545 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 24541 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+  Process: 24539 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 24547 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─24547 nginx: master process /usr/sbin/nginx
+           ├─24548 nginx: worker process
+           └─24549 nginx: worker process
+```
+
+Чтобы проверить, что логи ошибок также улетают на удаленный сервер, можно удалить картинку, к которой будет обращаться nginx во время открытия веб-сраницы: 
+
+```
+[root@web ~]# rm /usr/share/nginx/html/img/header-background.png
+rm: remove regular file '/usr/share/nginx/html/img/header-background.png'? y
+```
+Заходим несколько раз на http:/192.168.56.10, в том числе на ошибочные страницы:
+
+Смотрим логи на машине log
+
+```
+cat /var/log/rsyslog/web/nginx_access.log 
+```
+
+![Image 23](lesson24/2.png)
+
+```
+cat /var/log/rsyslog/web/nginx_error.log
+```
+![Image 24](lesson24/3.png)
+
+
+
 
 
 
