@@ -1,6 +1,6 @@
 #!/bin/bash
 export BORG_RSH="ssh -i /root/.ssh/id_rsa"
-export BORG_REPO=ssh://borg@192.168.11.101/var/backup/repo
+export BORG_REPO=ssh://borg@192.168.56.160/var/backup/repo
 export BORG_PASSPHRASE='password'
 LOG="/var/log/borg_backup.log"
 [ -f "$LOG" ] || touch "$LOG"
@@ -10,6 +10,10 @@ echo "Starting backup"
 borg create --verbose --stats ::'{now:%Y-%m-%d_%H:%M:%S}' /etc
 
 echo "Pruning repository"
-borg prune --list --keep-daily 90 --keep-monthly 12
+borg prune --list --keep-daily 90 --keep-monthly 12 --keep-yearly 1
+
+
+
+
 
 
