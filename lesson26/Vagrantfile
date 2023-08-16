@@ -49,24 +49,27 @@ Vagrant.configure('2') do |config|
   end
 
     server.vm.provision 'shell', inline: <<-SERVERSHELL
-  ##      useradd -m borg
-  ##      echo password | passwd borg --stdin
-  ##      sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-  ##      systemctl restart sshd
-  ##      mkdir -p /var/backup
-  ##      mkfs.xfs -q /dev/sdb
-  ##      mount /dev/sdb /var/backup
-  ##      chown -R borg:borg /var/backup
+        yum -y install borgbackup
+        useradd -m borg
+        echo password | passwd borg --stdin
+        sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+        systemctl restart sshd
+        lsblk
+        mkdir /var/backup
+        yes | mkfs -t ext4 /dev/sdb
+        mount /dev/sdb /var/backup/
+        chown -R borg:borg /var/backup
     SERVERSHELL
   end
   config.vm.define 'client' do |client|
     client.vm.provision 'shell', inline: <<-CLIENTSHELL
- ##       ssh-keygen -b 2048 -t rsa -q -N '' -f ~/.ssh/id_rsa
- ##       sshpass -ppassword ssh-copy-id -o StrictHostKeyChecking=no borg@192.168.11.160
- ##       borg init -e none borg@192.168.56.160:/var/backup/repo
- ##       borg create borg@192.168.56.160:/var/backup/repo::"FirstBackup-{now:%Y-%m-%d_%H:%M:%S}" /etc
- ##       cp /vagrant/backup.sh /root/
- ##       crontab -l | { cat; echo "*/5 * * * * /root/backup.sh"; } | crontab -
+        sudo su
+        yum -y install borgbackup
+        ssh-keygen -b 2048 -t rsa -q -N '' -f ~/.ssh/id_rsa
+        sshpass -ppassword ssh-copy-id -o StrictHostKeyChecking=no borg@192.168.56.160
+        borg init -e repokey borg@192.168.56.160:/var/backup/repo
+        cp /vagrant/backup.sh /root/
+        chmod +x /root/backup.sh
     CLIENTSHELL
   end
 end
