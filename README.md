@@ -1599,8 +1599,6 @@ end
 ![Image 26](lesson26/7.png)
 
 ![Image 26](lesson26/3.png)
-![Image 26](lesson26/4.png)
-
 
 Дабавляем наш task в файл /etc/crontab
 
@@ -1625,7 +1623,7 @@ borg list ssh://borg@192.168.11.101/var/backup/repo
 ```
 
 Восстановаем весь последний архив архив:  
-`borg extract ssh://borg@192.168.56.160/var/backup/repo::2020-10-04_14:10:02`
+`borg extract ssh://borg@192.168.56.160/var/backup/repo::2023-08-17_20:01:12`
 
 
 </details>
