@@ -1615,16 +1615,16 @@ end
 ```
 [root@client ~] mkdir borg_restore  
 [root@client ~] cd borg_restore  
+```
 
 Выясняем имя последнего архива:  
-
 ```
-borg list ssh://borg@192.168.11.101/var/backup/repo   
+[root@client ~] borg list ssh://borg@192.168.11.101/var/backup/repo   
 ```
 
 Восстановаем весь последний архив архив:  
-`borg extract ssh://borg@192.168.56.160/var/backup/repo::2023-08-16_17:20:01`
-
+```
+[root@client ~] borg extract ssh://borg@192.168.56.160/var/backup/repo::2023-08-16_17:20:01
 
 </details>
 
