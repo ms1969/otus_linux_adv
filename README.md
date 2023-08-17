@@ -1602,14 +1602,31 @@ end
 ![Image 26](lesson26/4.png)
 
 
-Вносим изменения в файл /etc/crontab
+Дабавляем наш task в файл /etc/crontab
 
 ![Image 26](lesson26/5.png)
 
 
-Проверяем, что скрипт срабатывает раз в 5 минут. 
+Проверяем, что скрипт срабатывает раз в 5 минут: 
 
 ![Image 26](lesson26/6.png)
+
+Восстановливаемся из бэкапа:  
+
+Создаем каталог для восстановления
+```
+[root@client ~] mkdir borg_restore  
+[root@client ~] cd borg_restore  
+
+Выясняем имя последнего архива:  
+
+```
+borg list ssh://borg@192.168.11.101/var/backup/repo   
+```
+
+Восстановаем весь последний архив архив:  
+`borg extract ssh://borg@192.168.56.160/var/backup/repo::2020-10-04_14:10:02`
+
 
 </details>
 
