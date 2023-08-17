@@ -1630,6 +1630,8 @@ end
 [root@client ~] borg extract ssh://borg@192.168.56.160/var/backup/repo::2023-08-16_17:20:01
 ```
 
+#### Материалы к домашнему заданию находятся в папке Lesson26 репозитория.
+
 </details>
 
 
