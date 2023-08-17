@@ -1573,7 +1573,9 @@ end
 
 Выполняем начальный бэкап для проверки:  
 
-`borg create ssh://borg@192.168.56.160:/var/backup/repo::"FirstBackup-{now:%Y-%m-%d_%H:%M:%S}" /etc`  
+```
+[root@client ~] borg create ssh://borg@192.168.56.160:/var/backup/repo::"FirstBackup-{now:%Y-%m-%d_%H:%M:%S}" /etc  
+```
 
 Добавляем опцию ротации в файл /etc/logrotate.d/borg_backup.conf
 
@@ -1609,9 +1611,10 @@ end
 
 ![Image 26](lesson26/6.png)
 
-Восстановливаемся из бэкапа:  
 
-Создаем каталог для восстановления
+#### Восстановливаемся из бэкапа  
+
+Создаем каталог для восстановления:
 ```
 [root@client ~] mkdir borg_restore  
 [root@client ~] cd borg_restore  
@@ -1625,6 +1628,7 @@ end
 Восстановаем весь последний архив архив:  
 ```
 [root@client ~] borg extract ssh://borg@192.168.56.160/var/backup/repo::2023-08-16_17:20:01
+```
 
 </details>
 
