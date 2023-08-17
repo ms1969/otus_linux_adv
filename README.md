@@ -1622,7 +1622,7 @@ end
 
 Выясняем имя последнего архива:  
 ```
-[root@client ~] borg list ssh://borg@192.168.11.101/var/backup/repo   
+[root@client ~] borg list ssh://borg@192.168.56.160/var/backup/repo   
 ```
 
 Восстановаем весь последний архив архив:  
