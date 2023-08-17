@@ -1570,8 +1570,32 @@ end
 
 ![Image 26](lesson26/2.png)
 
-![Image 26](lesson26/3.png)
 
+Выполняем начальный бэкап для проверки:  
+
+`borg create ssh://borg@192.168.56.160:/var/backup/repo::"FirstBackup-{now:%Y-%m-%d_%H:%M:%S}" /etc`  
+
+Добавляем опцию ротации в файл /etc/logrotate.d/borg_backup.conf
+
+```
+cat /etc/logrotate.d/borg_backup.conf`  
+
+/var/log/borg_backup.log {
+  rotate 5
+  missingok
+  notifempty
+  compress
+  size 1M
+  daily
+  create 0644 root root
+  postrotate
+     service rsyslog restart > /dev/null
+  endscript
+}
+```
+
+
+![Image 26](lesson26/3.png)
 ![Image 26](lesson26/4.png)
 
 ![Image 26](lesson26/5.png)
