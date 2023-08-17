@@ -1623,7 +1623,7 @@ borg list ssh://borg@192.168.11.101/var/backup/repo
 ```
 
 Восстановаем весь последний архив архив:  
-`borg extract ssh://borg@192.168.56.160/var/backup/repo::2023-08-17_20:01:12`
+`borg extract ssh://borg@192.168.56.160/var/backup/repo::2023-08-16_17:20:01`
 
 
 </details>
