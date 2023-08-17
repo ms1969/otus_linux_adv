@@ -1578,7 +1578,7 @@ end
 Добавляем опцию ротации в файл /etc/logrotate.d/borg_backup.conf
 
 ```
-cat /etc/logrotate.d/borg_backup.conf`  
+[root@client ~] cat /etc/logrotate.d/borg_backup.conf  
 
 /var/log/borg_backup.log {
   rotate 5
@@ -1594,6 +1594,9 @@ cat /etc/logrotate.d/borg_backup.conf`
 }
 ```
 
+Проверяем скрипт для автоматического создания резервных копий backup.sh и запускаем его
+
+![Image 26](lesson26/7.png)
 
 ![Image 26](lesson26/3.png)
 ![Image 26](lesson26/4.png)
