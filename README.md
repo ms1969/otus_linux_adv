@@ -1899,6 +1899,6 @@ end
 
 Сервер 2-го офиса с другими серверами
 
-![Image 30](lesson27/Office2Server-to-Servers.png)
+![Image 30](lesson27/Server2-to-Servers.png)
 
 </details>
