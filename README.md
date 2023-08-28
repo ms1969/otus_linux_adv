@@ -1899,6 +1899,38 @@ end
 
 Сервер 2-го офиса с другими серверами
 
-![Image 30](lesson27/Server2-to-Servers.png)
+![Image 31](lesson27/Server2-to-Servers.png)
+
+#### Теперь командой "traceroute" проверяем взамодействие всех устройств с интернетом и при этом убеждаемся что взаимодействие идет через inetRouter (192.168.215.1).
+
+С центрального роутера
+
+![Image 32](lesson27/CentralRouter-inet.png)
+
+C роутера 1-го офиса
+
+![Image 33](lesson27/Office1-inet.png)
+
+C роутера 2-го офиса
+
+![Image 34](lesson27/Office2-inet.png)
+
+С центрального сервера
+
+![Image 35](lesson27/CentralServer-inet.png)
+
+С сервера 1-го офиса
+
+![Image 36](lesson27/Server1-inet.png)
+
+С сервера 1-го офиса
+
+![Image 37](lesson27/Server2-inet.png)
+
+
+Задание завершено! Заранее благодарен за проверку.
+
+Материалы находятся в папке lesson27.
+
 
 </details>
