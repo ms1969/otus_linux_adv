@@ -1935,7 +1935,7 @@ C роутера 2-го офиса
 
 </details>
 
-## Lesson28 - DHCP.PXE-boot
+## Lesson28 - DHCP, PXE-boot
 
 <details>
 
@@ -2032,6 +2032,7 @@ end
 ![Image 40](lesson28/httpdpxeconf.png)   
 
 Перезапускаем httpd, проверяем его статус и устанавливаем enable на старт его при загрузке
+
 ![Image 41](lesson28/httpd-active.png)   
 
 ![Image 42](lesson28/enable-httpd.png)   
@@ -2041,6 +2042,24 @@ end
 ![Image 43](lesson28/check-httpd.png)   
 
 ![Image 44](lesson28/check2-httpd.png)   
+
+4. Настраиваем TFTP сервер
+
+Распаковываем файлы необходимые для первоначальной загрузки и копируем их в /var/lib/tftpboot
+
+![Image 45](lesson28/UnpackBaseOS.png)   
+
+![Image 46](lesson28/Copy-bootfiles.png)   
+   
+Запускаем TFTP сервер и проверяем статус
+
+![Image 47](lesson28/start-tftp.png)  
+
+Активируем его запуск при загрузке
+```
+[root@pxeserver ~]# systemctl enable tftp.service
+```
+
 
 
 
