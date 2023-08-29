@@ -2059,7 +2059,7 @@ end
 ```
 [root@pxeserver ~]# systemctl enable tftp.service
 ```
-5. Настраиваем экран в virtual Box для PXE клиента (увеличиваем до 20 память)
+5. Настраиваем экран в virtual Box для PXE клиента (увеличиваем видио память до 20МБ и меняем тип графического контроллера)
 
 ![Image 48](lesson28/Vboxconf.png)
 
