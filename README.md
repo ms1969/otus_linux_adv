@@ -2059,9 +2059,20 @@ end
 ```
 [root@pxeserver ~]# systemctl enable tftp.service
 ```
+5. Настраиваем экран в virtual Box для PXE клиента (увеличиваем до 20 память)
+
+![Image 48](lesson28/Vboxconf.png)
 
 
+6. Выполняем загрузку клиента поcредством PXE
 
+![Image 49](lesson28/initialboot.png)
+
+7. Указываем в качестве источника сетевой адрес.
+
+![Image 50](lesson28/Installscreen.png)
+
+Работа завершена. Рабочие материалы находятся в папке lesson28.
 
 
 
