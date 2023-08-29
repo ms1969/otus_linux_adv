@@ -2019,12 +2019,34 @@ config.vm.define "pxeserver" do |server|
 end
 
 ```
-2. Скачиваем iso образ операционной системы из Интеренета и монтируем его
+2. Скачиваем iso образ операционной системы из Интеренета, монтируем его, создаем каталог /iso, копируем в него файлы ОС и меняем на каталог права
 
 ![Image 38](lesson28/wgetiso.png)
 
-
 ![Image 39](lesson28/mount-cp-iso.png)
+
+3. Настраиваем web сервер, чтобы он отображал структуру каталогов.
+
+   Для этого изменяеи файл /etc/httpd/conf.d/pxeboot.conf
+
+![Image 40](lesson28/httpdpxeconf.png)   
+
+Перезапускаем httpd, проверяем его статус и устанавливаем enable на старт его при загрузке
+![Image 41](lesson28/httpd-active.png)   
+
+![Image 42](lesson28/enable-httpd.png)   
+
+Проверяем, что сервис работает
+
+![Image 43](lesson28/check-httpd.png)   
+
+![Image 44](lesson28/check2-httpd.png)   
+
+
+
+
+
+
 
 
 
