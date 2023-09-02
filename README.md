@@ -1940,14 +1940,16 @@ C роутера 2-го офиса
 <details>
 
 #### Задание:
-Настройка PXE сервера для автоматической установки
+
+Отработать навыки установки и настройки DHCP, TFTP, PXE загрузчика.
 
 1. Установить и настроить загрузку по сети для дистрибутива CentOS8.
-2. В качестве репозитория использовать репозиторий HTTP.
+2. Поменять установку из репозитория NFS на установку из репозитория HTTP.
+3. Настройка PXE сервера для автоматической установки
 
 #### Решение
 
-1. С помощью Vagrantfile создаем pxeserver и pxeclient, в процессе создания на сервере устанавливаем
+1. С помощью Vagrantfile создаем pxeserver и pxeclient. Выполняем provision после установки (коментарии с описанием в тексте Vagrantfile) 
    
 ```
 root@ lesson28$ cat Vagrantfile 
@@ -1956,6 +1958,8 @@ root@ lesson28$ cat Vagrantfile
 # export VAGRANT_EXPERIMENTAL="disks"
 
 Vagrant.configure("2") do |config|
+
+#Создаем сервер с именем pxeserver
 
 config.vm.define "pxeserver" do |server|
   server.vm.box = 'bento/centos-8.4'
@@ -1978,7 +1982,6 @@ config.vm.define "pxeserver" do |server|
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
   end
 
-  # ENABLE to setup PXE
   server.vm.provision "shell", run: "always", inline: <<-SHELL
 
   # Так как у CentOS 8 закончилась поддержка, для установки пакетов меняем репозиторий репозиторий
@@ -1993,6 +1996,7 @@ config.vm.define "pxeserver" do |server|
   SHELL
   end
 
+#Создаем машину клиента (pxeclient), на которой будет выполянться автоматическая установка ОС
 
 # config used from this
 # https://github.com/eoli3n/vagrant-pxe/blob/master/client/Vagrantfile
