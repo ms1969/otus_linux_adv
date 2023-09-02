@@ -4,8 +4,13 @@
 
 Vagrant.configure("2") do |config|
 
+#Создаем сервер с именем pxeserver
+
 config.vm.define "pxeserver" do |server|
   server.vm.box = 'bento/centos-8.4'
+
+# Увеличиваем размер диска, чтобы была возможность комфортно работать с образом ОС  
+
   server.vm.disk :disk, size: "15GB", name: "extra_storage1"
 
   server.vm.host_name = 'pxeserver'
@@ -13,6 +18,7 @@ config.vm.define "pxeserver" do |server|
                      ip: "10.0.0.20", 
                      virtualbox__intnet: 'pxenet'
 
+ # Пробрасываем порт 8081 локальной операционной систем  на порт 80 сервера, чтобы была возможность подключаться к Apache 
   server.vm.network "forwarded_port", guest: 80, host: 8081
   server.vm.network :private_network, ip: "192.168.50.10", adapter: 3
 
@@ -21,21 +27,22 @@ config.vm.define "pxeserver" do |server|
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
   end
 
-  # ENABLE to setup PXE
   server.vm.provision "shell", run: "always", inline: <<-SHELL
+
+  # Так как у CentOS 8 закончилась поддержка, для установки пакетов меняем репозиторий репозиторий
+
   sudo sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*  
   sudo sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
+
+  # Устанавливем сервисы, которые нам портебуются (Apache-сервер, DHCP-сервер, TFT-сервер) 
   sudo yum -y install httpd
   sudo yum -y install dhcp-server
   sudo yum -y install tftp
   SHELL
-  #  name: "Setup PXE server",
-  #  path: "setup_pxe.sh"
   end
 
+#Создаем машину клиента (pxeclient), на которой будет выполянться автоматическая установка ОС
 
-# config used from this
-# https://github.com/eoli3n/vagrant-pxe/blob/master/client/Vagrantfile
   config.vm.define "pxeclient" do |pxeclient|
     pxeclient.vm.box = 'bento/centos-8.4'
     pxeclient.vm.host_name = 'pxeclient'
