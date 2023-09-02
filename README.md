@@ -2091,12 +2091,9 @@ end
      - Перезпускаем tftp сервер
      - Включаем сервис tftp в загрузку при старте
 
+![Image 46](lesson28/Copy-bootfiles.png)   
  
 3.3 Проверяем статус TFTP
-
-![Image 46](lesson28/Copy-bootfiles.png)   
-   
-Запускаем TFTP сервер и проверяем статус
 
 ![Image 47](lesson28/start-tftp.png)  
 
