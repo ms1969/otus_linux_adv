@@ -2071,7 +2071,7 @@ end
 
 Распаковываем файлы необходимые для первоначальной загрузки и копируем их в /var/lib/tftpboot
 
-![Image 45](lesson28/UnpackBaseOS.png)   
+![Image 45](lesson28/UnpackBaseOs.png)   
 
 ![Image 46](lesson28/Copy-bootfiles.png)   
    
