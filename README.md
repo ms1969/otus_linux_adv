@@ -1948,11 +1948,7 @@ C роутера 2-го офиса
 #### Решение
 
 1. С помощью Vagrantfile создаем pxeserver и pxeclient, в процессе создания на сервере устанавливаем
-  
-  - httpd
-  - dhcp-server
-  - tftp
- 
+   
 ```
 root@ lesson28$ cat Vagrantfile 
 # -*- mode: ruby -*-
@@ -1963,6 +1959,9 @@ Vagrant.configure("2") do |config|
 
 config.vm.define "pxeserver" do |server|
   server.vm.box = 'bento/centos-8.4'
+
+# Увеличиваем размер диска, чтобы была возможность комфортно работать с образом ОС  
+
   server.vm.disk :disk, size: "15GB", name: "extra_storage1"
 
   server.vm.host_name = 'pxeserver'
@@ -1970,6 +1969,7 @@ config.vm.define "pxeserver" do |server|
                      ip: "10.0.0.20", 
                      virtualbox__intnet: 'pxenet'
 
+ # Пробрасываем порт 8081 локальной операционной систем  на порт 80 сервера, чтобы была возможность подключаться к Apache 
   server.vm.network "forwarded_port", guest: 80, host: 8081
   server.vm.network :private_network, ip: "192.168.50.10", adapter: 3
 
@@ -1980,14 +1980,17 @@ config.vm.define "pxeserver" do |server|
 
   # ENABLE to setup PXE
   server.vm.provision "shell", run: "always", inline: <<-SHELL
+
+  # Так как у CentOS 8 закончилась поддержка, для установки пакетов меняем репозиторий репозиторий
+
   sudo sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*  
   sudo sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
+
+  # Устанавливем сервисы, которые нам портебуются (Apache-сервер, DHCP-сервер, TFT-сервер) 
   sudo yum -y install httpd
   sudo yum -y install dhcp-server
   sudo yum -y install tftp
   SHELL
-  #  name: "Setup PXE server",
-  #  path: "setup_pxe.sh"
   end
 
 
