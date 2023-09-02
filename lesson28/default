@@ -1,22 +1,36 @@
 default menu.c32
 prompt 0
+#Время счётчика с обратным отсчётом
 timeout 150
+#Параметр использования локального времени
 ONTIME local
+#Наименование меню
 menu title OTUS PXE Boot Menu
+       #Описание первой строки меню
        label 1
+       #Имя отображения 1-й строки
        menu label ^ Graph install CentOS 8.4
+       #Адрес расположения файла ядра на TFTP сервере
        kernel /vmlinuz
+       #Адрес initrd раволоженного на TFT сервере
        initrd /initrd.img
+       #Получаемый адрес по DHCP с указываем адреса веб-сервера
        append ip=enp0s3:dhcp inst.repo=http://10.0.0.20/centos8
+       #Описание второй строки меню
        label 2
+       #Имя отображения 2-й строки
        menu label ^ Text install CentOS 8.4
        kernel /vmlinuz
        initrd /initrd.img
+       #Получаемый адрес по DHCP с указываем адреса веб-сервера и опцией загрузки в текстовом режиме
        append ip=enp0s3:dhcp inst.repo=http://10.0.0.20/centos8 text
+       #Описание 3-й строки меню
        label 3
+       #Имя отображения 2-й строки
        menu label ^ rescue installed system
        kernel /vmlinuz
        initrd /initrd.img
+       #Получаемый адрес по DHCP с указываем адреса веб-сервера и опцией загрузки в режиме восстановления
        append ip=enp0s3:dhcp inst.repo=http://10.0.0.20/centos8 rescue
 
 
