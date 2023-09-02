@@ -2048,14 +2048,18 @@ end
 ![Image 38](lesson28/wgetiso.png)
 
 2.2 - Монтируем образ 
-    - Создаем каталог /iso
+    
+    - Создаем каталог /iso 
+    
     - Копируем в него файлы ОС
+    
     - Меняем на каталог права для обеспечения возможности подключения 'pxeclient'
 
 ![Image 39](lesson28/mount-cp-iso.png)
 
 2.3 Настраиваем web сервер, чтобы он отображал структуру каталогов, папки, где расположен образ
-     Для этого изменяеи файл /etc/httpd/conf.d/pxeboot.conf
+
+    Для этого изменяеи файл /etc/httpd/conf.d/pxeboot.conf
 
 ![Image 40](lesson28/httpdpxeconf.png)   
 
