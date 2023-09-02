@@ -2088,7 +2088,9 @@ end
 ![Image 45](lesson28/UnpackBaseOs.png) 
 
 3.2  - Файлы необходимые для первоначальной загрузки копируем их в /var/lib/tftpboot 
+ 
      - Перезпускаем tftp сервер
+     
      - Включаем сервис tftp в загрузку при старте
 
 ![Image 46](lesson28/Copy-bootfiles.png)   
@@ -2097,11 +2099,47 @@ end
 
 ![Image 47](lesson28/start-tftp.png)  
 
-Активируем его запуск при загрузке
+4. Настройка ранее устрановленного DHCP сервера
+
+Для настройки в файле /etc/dhcp/dhcpd.conf указываем диапазон адресов для выдачи клиентам, имя TFTP сервера и имя файла. 
+
 ```
-[root@pxeserver ~]# systemctl enable tftp.service
+[vagrant@pxeserver ~]$ sudo cat  /etc/dhcp/dhcpd.conf
+#
+# DHCP Server Configuration file.
+#   see /usr/share/doc/dhcp-server/dhcpd.conf.example
+#   see dhcpd.conf(5) man page
+#
+option space pxelinux;
+option pxelinux.magic code 208 = string;
+option pxelinux.configfile code 209 = text;
+option pxelinux.pathprefix code 210 = text;
+option pxelinux.reboottime code 211 = unsigned integer 32;
+option architecture-type code 93 = unsigned integer 16;
+
+#Указываем сеть и маску подсети, в которой будет работать DHCP-сервер
+
+subnet 10.0.0.0 netmask 255.255.255.0 {
+
+#Указываем диапазон адресов
+        range 10.0.0.100 10.0.0.120;
+
+        class "pxeclients" {
+          match if substring (option vendor-class-identifier, 0, 9) = "PXEClient";
+#Указываем адрес TFTP-сервера
+          next-server 10.0.0.20;
+#Указываем имя файла, который надо запустить с TFTP-сервера
+          filename "pxelinux.0";
+        }
+}
+
+
 ```
-5. Настраиваем экран в virtual Box для PXE клиента (увеличиваем видио память до 20МБ и меняем тип графического контроллера)
+
+
+
+
+6. Настраиваем экран в virtual Box для PXE клиента (увеличиваем видио память до 20МБ и меняем тип графического контроллера)
 
 ![Image 48](lesson28/Vboxconf.png)
 
@@ -2115,12 +2153,6 @@ end
 ![Image 50](lesson28/Installscreen.png)
 
 Работа завершена. Рабочие материалы находятся в папке lesson28.
-
-
-
-
-
-
 
 
 </details>
