@@ -2070,15 +2070,21 @@ end
 
 ![Image 42](lesson28/enable-httpd.png)   
 
-Проверяем, что сервис работает
+2.5 Проверяем, что web сервер работает
 
 ![Image 43](lesson28/check-httpd.png)   
 
+2.6 Проверяем, что нужный нам для установки каталог доступен через http
+
 ![Image 44](lesson28/check2-httpd.png)   
 
-4. Настраиваем TFTP сервер
+
+3. Настройка TFTP сервера
 
 Распаковываем файлы необходимые для первоначальной загрузки и копируем их в /var/lib/tftpboot
+
+
+
 
 ![Image 45](lesson28/UnpackBaseOs.png)   
 
