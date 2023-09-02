@@ -2081,12 +2081,18 @@ end
 
 3. Настройка TFTP сервера
 
-Распаковываем файлы необходимые для первоначальной загрузки и копируем их в /var/lib/tftpboot
+3.1 Выполняем  распаковку syslinux-tftpboot-6.04-5.el8.noarch.rpm:
 
+'rpm2cpio /iso/BaseOS/Packages/syslinux-tftpboot-6.04-5.el8.noarch.rpm | cpio -dimv'
 
+![Image 45](lesson28/UnpackBaseOs.png) 
 
+3.2  - Файлы необходимые для первоначальной загрузки копируем их в /var/lib/tftpboot 
+     - Перезпускаем tftp сервер
+     - Включаем сервис tftp в загрузку при старте
 
-![Image 45](lesson28/UnpackBaseOs.png)   
+ 
+3.3 Проверяем статус TFTP
 
 ![Image 46](lesson28/Copy-bootfiles.png)   
    
