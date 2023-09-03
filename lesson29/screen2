@@ -1,0 +1,34 @@
+[vagrant@centralRouter ~]$ /vagrant/knock_scr.sh 192.168.255.1 8881 7777 9991
+
+Starting Nmap 6.40 ( http://nmap.org ) at 2023-09-03 15:01 UTC
+Warning: 192.168.255.1 giving up on port because retransmission cap hit (0).
+Nmap scan report for maksim-System-Product-Name (192.168.255.1)
+Host is up (0.00022s latency).
+PORT     STATE    SERVICE
+8881/tcp filtered unknown
+MAC Address: 0A:00:27:00:00:01 (Unknown)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.57 seconds
+
+Starting Nmap 6.40 ( http://nmap.org ) at 2023-09-03 15:01 UTC
+Warning: 192.168.255.1 giving up on port because retransmission cap hit (0).
+Nmap scan report for maksim-System-Product-Name (192.168.255.1)
+Host is up (0.00015s latency).
+PORT     STATE    SERVICE
+7777/tcp filtered cbt
+MAC Address: 0A:00:27:00:00:01 (Unknown)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.56 seconds
+
+Starting Nmap 6.40 ( http://nmap.org ) at 2023-09-03 15:01 UTC
+Warning: 192.168.255.1 giving up on port because retransmission cap hit (0).
+Nmap scan report for maksim-System-Product-Name (192.168.255.1)
+Host is up (0.00020s latency).
+PORT     STATE    SERVICE
+9991/tcp filtered issa
+MAC Address: 0A:00:27:00:00:01 (Unknown)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.57 seconds
+
+
+
