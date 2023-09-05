@@ -2590,7 +2590,7 @@ Nmap done: 1 IP address (1 host up) scanned in 0.57 seconds
 6. Проверяем проброс порта до nginx
 
 ```
-root@ubuntu:~# curl 192.168.11.121:8080 
+root@ lesson29$ curl 192.168.11.121:8080 
 
 Test  mapping inetRouter2:8080 to centralServer:80 Okey
 
