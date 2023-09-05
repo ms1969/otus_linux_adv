@@ -2184,7 +2184,7 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 Для реализации Port Knocking ивпользовалась ссылка из материалов курсв
 https://wiki.archlinux.org/title/Port_knocking
 
-Ход работ:
+#### Ход работ:
 
 
 1. Подготавливаем файд port_knocking-rules для загрузки в iptables inetRouter
