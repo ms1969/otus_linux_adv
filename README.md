@@ -2596,10 +2596,11 @@ Test  mapping inetRouter2:8080 to centralServer:80 Okey
 
 ```
 
-7. Проверяем выполняется ли требование задания чтобы трафик шел через default inetRouter
+7. Проверяем выполняется ли требование задания о прохождении трафика через default inetRouter
 
    
 
+Материалы, включая Vagrantfile, размещены в папке lesson29.
 </details>
 
 
