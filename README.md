@@ -2170,13 +2170,14 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 
 3. Запустить nginx на centralServer.
 
-4. Пробросить 80й порт centralServer на порт 8080 inetRouter2.
+4. Пробросить 80-й порт centralServer на порт 8080 inetRouter2.
 
 5. Дефолт в Интернет оставить через inetRouter.
 
 
 #### Описание стенда
 
+Стенд состоит из хостовой машины под управлением Ubuntu 22.04 c утановленными VitualBox 6.1 и развернутым Vagrant и ansible. C помощью Vagrant разворачиваются виртуальные машины `centralServer` с установленной на него to/centos-8.4 и pxeclient без установленой ОС. После настройки pxeserver на 'pxeclient' с помощью технологии PXE будет установлена операционная система.
 
 
 
