@@ -2163,7 +2163,7 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 <details>
 #### Задание:
 	
-1. Реализовать knocking port (centralRouter может попасть на ssh inetrRouter через knock скрипт)
+1. Реализовать knocking port (centralRouter может попасть на ssh inetRouter через knock скрипт)
 	
 2. Добавить inetRouter2, который виден (маршрутизируется (host-only тип сети для виртуалки)) с хоста или форвардится порт через локалхост.
 
@@ -2174,12 +2174,16 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 5. Дефолт в Интернет оставить через inetRouter.
 
 
-
 #### Описание стенда
 
 
 
+####
 
+Для реализации Port Knocking ивпользовалась ссылка из материалов курсв
+https://wiki.archlinux.org/title/Port_knocking
+
+Решение:
 
 </details>
 
