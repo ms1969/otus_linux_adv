@@ -2161,6 +2161,7 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 ## Lesson29 - Фильтрация трафика - Firewalld, iptables
 
 <details>
+
 #### Задание:
 	
 1. Реализовать knocking port (centralRouter может попасть на ssh inetRouter через knock скрипт)
@@ -2178,7 +2179,7 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 
 
 
-####
+
 
 Для реализации Port Knocking ивпользовалась ссылка из материалов курсв
 https://wiki.archlinux.org/title/Port_knocking
