@@ -2456,7 +2456,145 @@ COMMIT
 
  ```
 
+4. После выполнения playbook, убеждаемся в отсутствии ошибок
 
+```
+  inetRouter: Running ansible-playbook...
+
+PLAY [ConfigInetRouter] ********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [inetRouter]
+
+TASK [install Services] ********************************************************
+changed: [inetRouter]
+
+TASK [Set ip forwarding = '1'] *************************************************
+changed: [inetRouter]
+
+TASK [iptables config copy] ****************************************************
+changed: [inetRouter]
+
+PLAY [ConfigInetRouter2] *******************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [inetRouter2]
+
+TASK [install Services] ********************************************************
+ok: [inetRouter2]
+
+TASK [Set ip forwarding = '1'] *************************************************
+ok: [inetRouter2]
+
+TASK [iptables config copy] ****************************************************
+ok: [inetRouter2]
+
+TASK [disable default route] ***************************************************
+ok: [inetRouter2]
+
+TASK [default route] ***********************************************************
+changed: [inetRouter2]
+
+PLAY [ConfigcentralRouter] *****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [centralRouter]
+
+TASK [install Services] ********************************************************
+ok: [centralRouter]
+
+TASK [Set ip forwarding = '1'] *************************************************
+ok: [centralRouter]
+
+PLAY [ConfigcentralServer] *****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [centralServer]
+
+TASK [Enable EPEL Repository on CentOS 7] **************************************
+changed: [centralServer]
+
+TASK [install Services] ********************************************************
+ok: [centralServer]
+
+TASK [change config] ***********************************************************
+ok: [centralServer]
+
+TASK [start nginx] *************************************************************
+ok: [centralServer]
+
+TASK [disable default route] ***************************************************
+ok: [centralServer]
+
+TASK [default route] ***********************************************************
+changed: [centralServer]
+
+PLAY RECAP *********************************************************************
+centralRouter              : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+centralServer              : ok=7    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+inetRouter                 : ok=4    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+inetRouter2                : ok=6    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+```
+
+4. Создаем knock_src.sh для проверки port knocking
+
+```
+#!/bin/bash
+HOST=$1
+shift
+for ARG in "$@"
+do
+        sudo nmap -Pn --max-retries 0 -p $ARG $HOST
+done
+
+```
+
+5. Проверяем port knocking
+
+```
+[vagrant@centralRouter ~]$ /vagrant/knock_scr.sh 192.168.255.1 8881 7777 9991
+
+Starting Nmap 6.40 ( http://nmap.org ) at 2023-09-03 15:01 UTC
+Warning: 192.168.255.1 giving up on port because retransmission cap hit (0).
+Nmap scan report for maksim-System-Product-Name (192.168.255.1)
+Host is up (0.00022s latency).
+PORT     STATE    SERVICE
+8881/tcp filtered unknown
+MAC Address: 0A:00:27:00:00:01 (Unknown)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.57 seconds
+
+Starting Nmap 6.40 ( http://nmap.org ) at 2023-09-03 15:01 UTC
+Warning: 192.168.255.1 giving up on port because retransmission cap hit (0).
+Nmap scan report for maksim-System-Product-Name (192.168.255.1)
+Host is up (0.00015s latency).
+PORT     STATE    SERVICE
+7777/tcp filtered cbt
+MAC Address: 0A:00:27:00:00:01 (Unknown)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.56 seconds
+
+Starting Nmap 6.40 ( http://nmap.org ) at 2023-09-03 15:01 UTC
+Warning: 192.168.255.1 giving up on port because retransmission cap hit (0).
+Nmap scan report for maksim-System-Product-Name (192.168.255.1)
+Host is up (0.00020s latency).
+PORT     STATE    SERVICE
+9991/tcp filtered issa
+MAC Address: 0A:00:27:00:00:01 (Unknown)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.57 seconds
+
+```
+
+6. Проверяем проброс порта до nginx
+
+```
+root@ubuntu:~# curl 192.168.11.121:8080 
+
+Test  mapping inetRouter2:8080 to centralServer:80 Okey
+
+```
 
 </details>
 
