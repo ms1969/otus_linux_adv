@@ -2596,6 +2596,10 @@ Test  mapping inetRouter2:8080 to centralServer:80 Okey
 
 ```
 
+7. Проверяем выполняется ли требование задания чтобы трафик шел через default inetRouter
+
+   
+
 </details>
 
 
