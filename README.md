@@ -2177,14 +2177,216 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 
 #### Описание стенда
 
-Стенд состоит из хостовой машины под управлением Ubuntu 22.04 c утановленными VitualBox 6.1 и развернутым Vagrant C помощью Vagrant разворачиваются виртуальные машины c утановленным centos7: `centralServer`, 'centalRouter`, inetRouter, inetRouter2. 
-Дальнейшие настройки производяться запуском из Vagrant ansible сценария (playbook.yml)
+Стенд состоит из хостовой машины под управлением Ubuntu 22.04 c утановленными VitualBox 6.1 и развернутым Vagrant. C помощью Vagrant разворачиваются виртуальные машины c уcтановленным centos7: `centralServer`, 'centalRouter`, `inetRouter`, `inetRouter2`. 
+Дальнейшие настройки производяться запуском из Vagrant с использованием ansible плейбука (playbook.yml).
 
 
 Для реализации Port Knocking ивпользовалась ссылка из материалов курсв
 https://wiki.archlinux.org/title/Port_knocking
 
-Решение:
+Ход работ:
+
+
+1. Ansible Playbook.yml, производящий настройки роутеров и сервера с коментрариями
+
+```
+---
+
+
+# Насторойка inetRouter
+
+- name: ConfigInetRouter
+
+# Имя настраиваемого хоста
+
+  hosts: inetRouter  
+
+# Выполнение от имени root 
+  become: true
+
+# Установка необходимых сервисов на inetRouter
+
+
+  tasks:
+    - name: install Services
+      yum:
+        name:
+        - vim  
+        - iptables
+        - tcpdump
+        - net-tools  
+        - iptables-services
+        - traceroute
+        - nmap  
+        state: present
+        update_cache: true
+
+# Включение маршрутизации на роутере
+
+    - name: Set ip forwarding = '1'
+      sysctl:
+        name: net.ipv4.conf.all.forwarding
+        value: 1
+        sysctl_set: yes
+        state: present
+        reload: yes
+
+# Загрузка правил (конфигурации) iptables для реализации технологии port knocking
+
+    - name: iptables config copy
+      copy:
+        src: port_knocking-rules
+        dest: /etc/iptables_inetrouter.rules
+        owner: root
+        group: root
+        mode: 0644
+
+
+# Насторойка inetRouter2
+
+- name: ConfigInetRouter2
+  hosts: inetRouter2
+  become: true
+
+
+
+# Установка необходимых сервисов на inetRouter2
+
+  tasks:
+    - name: install Services
+      yum:
+        name:
+        - vim
+        - iptables
+        - tcpdump
+        - net-tools
+        - iptables-services
+        - traceroute
+        - nmap  
+        state: present
+        update_cache: true
+
+# Включение маршрутизации
+
+    - name: Set ip forwarding = '1'
+      sysctl:
+        name: net.ipv4.conf.all.forwarding
+        value: 1
+        sysctl_set: yes
+        state: present
+        reload: yes
+
+# Загрузка правил в iptables
+
+    - name: iptables config copy
+      copy:
+        src: msk-rules
+        dest: /etc/iptables_inetrouter.rules
+        owner: root
+        group: root
+        mode: 0644
+
+# Отключение маршрута по умолчанию 
+
+    - name: disable default route
+      ansible.builtin.lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-eth0
+        line: DEFROUTE=no
+
+# Установка маршрута по умолчанию на inetRouter
+
+    - name: default route
+      ansible.builtin.shell: |
+        echo "GATEWAY=192.168.255.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1         
+
+
+# Настройка центрального маршрутизатора
+
+- name: ConfigcentralRouter
+  hosts: centralRouter
+  become: true
+
+  tasks:
+    - name: install Services
+      yum:
+        name:
+        - vim
+        - iptables
+        - tcpdump
+        - net-tools
+        - iptables-services
+        - traceroute
+        - nmap  
+        state: present
+        update_cache: true
+
+# Включение маршрутизации
+
+    - name: Set ip forwarding = '1'
+      sysctl:
+        name: net.ipv4.conf.all.forwarding
+        value: 1
+        sysctl_set: yes
+        state: present
+        reload: yes
+
+
+# Настройка центрального сервера
+
+- name: ConfigcentralServer
+  hosts: centralServer
+  become: true
+
+
+  tasks:
+    - name: Enable EPEL Repository on CentOS 7
+      yum:
+        name: epel-release
+        state: latest
+
+    - name: install Services
+      yum:
+        name:
+        - vim
+        - iptables
+        - tcpdump
+        - net-tools
+        - iptables-services
+        - traceroute
+        - nmap
+        - nginx  
+        state: present
+        update_cache: true
+
+# Добавление строчки в index.html для будущей проверки работы проброса порта и ngnix
+
+    - name: change config
+      ansible.builtin.lineinfile:
+        path: /usr/share/nginx/html/index.html
+        line: 'Test  mapping inetRouter2:8080 to centralServer:80 Okey'
+
+# Запуск и установка в автостаро nginx
+          
+    - name: start nginx
+      service: 
+        name: nginx
+        state: started
+        enabled: yes
+
+# Изменение defaul gateway
+
+    - name: disable default route
+      ansible.builtin.lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-eth0
+        line: DEFROUTE=no
+
+    - name: default route
+      ansible.builtin.shell: |
+        echo "GATEWAY=192.168.100.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+
+ ```
+
+
 
 </details>
 
