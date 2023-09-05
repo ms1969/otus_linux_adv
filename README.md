@@ -2158,6 +2158,29 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 
 </details>
 
+## Lesson29 - Фильтрация трафика - Firewalld, iptables
 
+<details>
+#### Задание:
+	
+1. Реализовать knocking port (centralRouter может попасть на ssh inetrRouter через knock скрипт)
+	
+2. Добавить inetRouter2, который виден (маршрутизируется (host-only тип сети для виртуалки)) с хоста или форвардится порт через локалхост.
+
+3. Запустить nginx на centralServer.
+
+4. Пробросить 80й порт centralServer на порт 8080 inetRouter2.
+
+5. Дефолт в Интернет оставить через inetRouter.
+
+
+
+#### Описание стенда
+
+
+
+
+
+</details>
 
 
