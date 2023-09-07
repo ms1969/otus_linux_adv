@@ -2643,18 +2643,23 @@ traceroute to www.otus.ru (104.26.5.108), 30 hops max, 60 byte packets
 
 Схема сети:
 
-![Image 47](lesson32/1.png)  
+![Image 321](lesson32/1.png)  
 
 #### Ход работ
 
 1. Создаем три маршруттизатора c установленным FRR используя Vagrant + ansible.
 
-![Image 47](lesson32/2.png)    
+![Image 322](lesson32/2.png)    
 
 
 2. Проверям взамодействие между маршрутизаторами
 
 
+
+
+3. Настройка и проверка ассиметричного роутинга
+
+   
 
 
 
