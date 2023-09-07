@@ -2647,12 +2647,78 @@ traceroute to www.otus.ru (104.26.5.108), 30 hops max, 60 byte packets
 
 #### Ход работ
 
-1. Создаем три маршруттизатора c установленным FRR используя Vagrant + ansible.
+1. Cоздаем 3 файла конфигурации OSPF для каждого маршрутизатора frr.conf, frr2.conf,frr3.conf
+
+Пример frr.conf, 2 других расположены в папке lesson32/ansible
+```
+root@ ansible$ cat frr.conf
+!Указание версии FRR
+frr version 8.1
+frr defaults traditional
+!Указываем имя машины
+hostname router1
+log syslog informational
+no ipv6 forwarding
+service integrated-vtysh-config
+!
+!Добавляем информацию об интерфейсе enp0s8
+interface enp0s8
+ !Указываем имя интерфейса
+ description r1-r2
+ !Указываем ip-aдрес и маску (эту информацию мы получили в прошлом шаге)
+ ip address 10.0.10.1/30
+ !Указываем параметр игнорирования MTU
+ ip ospf mtu-ignore
+ !Если потребуется, можно указать «стоимость» интерфейса
+ !ip ospf cost 1000
+ !Указываем параметры hello-интервала для OSPF пакетов
+ ip ospf hello-interval 10
+ !Указываем параметры dead-интервала для OSPF пакетов
+ !Должно быть кратно предыдущему значению
+ ip ospf dead-interval 30
+!
+interface enp0s9
+ description r1-r3
+ ip address 10.0.12.1/30
+ ip ospf mtu-ignore
+ !ip ospf cost 45
+ ip ospf hello-interval 10
+ ip ospf dead-interval 30
+
+interface enp0s10
+ description net_router1
+ ip address 192.168.10.1/24
+ ip ospf mtu-ignore
+ !ip ospf cost 45
+ ip ospf hello-interval 10
+ ip ospf dead-interval 30 
+!
+!Начало настройки OSPF
+router ospf
+ !Указываем router-id 
+ router-id 1.1.1.1
+ !Указываем сети, которые хотим анонсировать соседним роутерам
+ network 10.0.10.0/30 area 0
+ network 10.0.12.0/30 area 0
+ network 192.168.10.0/24 area 0 
+ !Указываем адреса соседних роутеров
+ neighbor 10.0.10.2
+ neighbor 10.0.12.2
+
+!Указываем адрес log-файла
+log file /var/log/frr/frr.log
+default-information originate always
+
+```
+
+
+2. Далее создаем три маршрутизатора c помощью Vagrant используя ansible playbook `provision.yml` применяем файлы конфигурации OSPF
+   и делаем другие настройки, в том числе для возможности ассимитричного роуминга.
 
 ![Image 322](lesson32/2.png)    
 
 
-2. Проверям взамодействие между маршрутизаторами
+3. Проверям взамодействие между маршрутизаторами
 
 
 
