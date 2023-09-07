@@ -2720,10 +2720,178 @@ default-information originate always
 
 3. Проверям взамодействие между маршрутизаторами
 
+Взаимодействие:  R1-->R3,R1-->R2
+```
+root@ lesson32$ vagrant ssh router1
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-156-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Thu Sep  7 13:15:16 UTC 2023
+
+  System load:     0.0               IPv4 address for enp0s10: 192.168.10.1
+  Usage of /:      4.8% of 38.70GB   IPv4 address for enp0s16: 192.168.50.10
+  Memory usage:    31%               IPv4 address for enp0s3:  10.0.2.15
+  Swap usage:      0%                IPv4 address for enp0s8:  10.0.10.1
+  Processes:       121               IPv4 address for enp0s9:  10.0.12.1
+  Users logged in: 0
+
+ * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+   just raised the bar for easy, resilient and secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+New release '22.04.3 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
 
 
+*** System restart required ***
+Last login: Wed Sep  6 15:29:06 2023 from 10.0.2.2
+vagrant@router1:~$ ping 192.168.30.1
+PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
+64 bytes from 192.168.30.1: icmp_seq=1 ttl=64 time=1.05 ms
+64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=1.01 ms
+64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=1.02 ms
+^C
+--- 192.168.30.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 1.012/1.026/1.050/0.017 ms
+vagrant@router1:~$ ping 192.168.20.1
+PING 192.168.20.1 (192.168.20.1) 56(84) bytes of data.
+64 bytes from 192.168.20.1: icmp_seq=1 ttl=64 time=0.838 ms
+64 bytes from 192.168.20.1: icmp_seq=2 ttl=64 time=1.05 ms
+64 bytes from 192.168.20.1: icmp_seq=3 ttl=64 time=0.946 ms
+64 bytes from 192.168.20.1: icmp_seq=4 ttl=64 time=0.931 ms
+^C
+--- 192.168.20.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3004ms
+rtt min/avg/max/mdev = 0.838/0.942/1.054/0.076 ms
+```
 
-3. Настройка и проверка ассиметричного роутинга
+Взаимодействие:  R2-->R3,R2-->R1
+
+```
+root@ lesson32$ vagrant ssh router2
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-156-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Thu Sep  7 13:19:45 UTC 2023
+
+  System load:     0.0               IPv4 address for enp0s10: 192.168.20.1
+  Usage of /:      4.8% of 38.70GB   IPv4 address for enp0s16: 192.168.50.11
+  Memory usage:    27%               IPv4 address for enp0s3:  10.0.2.15
+  Swap usage:      0%                IPv4 address for enp0s8:  10.0.10.2
+  Processes:       122               IPv4 address for enp0s9:  10.0.11.2
+  Users logged in: 0
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+New release '22.04.3 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+*** System restart required ***
+Last login: Wed Sep  6 15:37:59 2023 from 10.0.2.2
+vagrant@router2:~$ ping 192.168.30.1
+PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
+64 bytes from 192.168.30.1: icmp_seq=1 ttl=64 time=0.767 ms
+64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.981 ms
+64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.337 ms
+64 bytes from 192.168.30.1: icmp_seq=4 ttl=64 time=1.05 ms
+^C
+--- 192.168.30.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3027ms
+rtt min/avg/max/mdev = 0.337/0.784/1.053/0.278 ms
+vagrant@router2:~$ ping 192.168.10.1
+PING 192.168.10.1 (192.168.10.1) 56(84) bytes of data.
+64 bytes from 192.168.10.1: icmp_seq=1 ttl=64 time=0.841 ms
+64 bytes from 192.168.10.1: icmp_seq=2 ttl=64 time=1.00 ms
+64 bytes from 192.168.10.1: icmp_seq=3 ttl=64 time=0.909 ms
+64 bytes from 192.168.10.1: icmp_seq=4 ttl=64 time=0.957 ms
+^C
+--- 192.168.10.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3015ms
+rtt min/avg/max/mdev = 0.841/0.926/1.000/0.059 ms
+vagrant@router2:~$ 
+
+```
+Взаимодействие:  R3-->R2,R3-->R1:
+
+```
+oot@ lesson32$ vagrant ssh router3
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-156-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Thu Sep  7 13:22:25 UTC 2023
+
+  System load:     0.0               IPv4 address for enp0s10: 192.168.30.1
+  Usage of /:      4.8% of 38.70GB   IPv4 address for enp0s16: 192.168.50.12
+  Memory usage:    27%               IPv4 address for enp0s3:  10.0.2.15
+  Swap usage:      0%                IPv4 address for enp0s8:  10.0.11.1
+  Processes:       121               IPv4 address for enp0s9:  10.0.12.2
+  Users logged in: 0
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+
+*** System restart required ***
+Last login: Wed Sep  6 15:28:05 2023 from 10.0.2.2
+vagrant@router3:~$ ping 192.168.20.1
+PING 192.168.20.1 (192.168.20.1) 56(84) bytes of data.
+64 bytes from 192.168.20.1: icmp_seq=1 ttl=64 time=0.411 ms
+64 bytes from 192.168.20.1: icmp_seq=2 ttl=64 time=0.873 ms
+64 bytes from 192.168.20.1: icmp_seq=3 ttl=64 time=0.966 ms
+64 bytes from 192.168.20.1: icmp_seq=4 ttl=64 time=1.05 ms
+^C
+--- 192.168.20.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3036ms
+rtt min/avg/max/mdev = 0.411/0.823/1.045/0.245 ms
+vagrant@router3:~$ ping 192.168.10.1
+PING 192.168.10.1 (192.168.10.1) 56(84) bytes of data.
+64 bytes from 192.168.10.1: icmp_seq=1 ttl=64 time=0.968 ms
+64 bytes from 192.168.10.1: icmp_seq=2 ttl=64 time=1.01 ms
+64 bytes from 192.168.10.1: icmp_seq=3 ttl=64 time=0.975 ms
+64 bytes from 192.168.10.1: icmp_seq=4 ttl=64 time=0.981 ms
+^C
+--- 192.168.10.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3117ms
+rtt min/avg/max/mdev = 0.968/0.984/1.013/0.017 ms
+
+```
+
+
+3. После проверки настраиваем ассиметричного роутинга.
+
+   
 
    
 
