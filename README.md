@@ -2971,7 +2971,90 @@ PING 192.168.20.1 (192.168.20.1) from 192.168.10.1 : 56(84) bytes of data.
 
 ```
 
+```
+root@ task1_tun$ vagrant provision 
+==> server: Running provisioner: ansible...
+    server: Running ansible-playbook...
 
+PLAY [ConfigAll] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [server]
+
+TASK [Epel Install] ************************************************************
+changed: [server]
+
+TASK [install Services] ********************************************************
+ok: [server]
+
+TASK [Disable SELinux] *********************************************************
+ok: [server]
+
+TASK [reboot] ******************************************************************
+changed: [server]
+
+PLAY [ConfigServer] ************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [server]
+
+TASK [copy key] ****************************************************************
+changed: [server]
+
+TASK [copy config] *************************************************************
+ok: [server]
+
+TASK [copy servive file] *******************************************************
+ok: [server]
+
+PLAY [ConfigClient] ************************************************************
+skipping: no hosts matched
+
+PLAY RECAP *********************************************************************
+server                     : ok=9    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+==> client: Running provisioner: ansible...
+    client: Running ansible-playbook...
+
+PLAY [ConfigAll] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [client]
+
+TASK [Epel Install] ************************************************************
+changed: [client]
+
+TASK [install Services] ********************************************************
+ok: [client]
+
+TASK [Disable SELinux] *********************************************************
+ok: [client]
+
+TASK [reboot] ******************************************************************
+changed: [client]
+
+PLAY [ConfigServer] ************************************************************
+skipping: no hosts matched
+
+PLAY [ConfigClient] ************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [client]
+
+TASK [copy key] ****************************************************************
+changed: [client]
+
+TASK [copy config] *************************************************************
+ok: [client]
+
+TASK [copy servive file] *******************************************************
+ok: [client]
+
+PLAY RECAP *********************************************************************
+client                     : ok=9    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+```
 
 
 
