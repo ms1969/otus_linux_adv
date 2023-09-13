@@ -3027,6 +3027,11 @@ WantedBy=multi-user.target
 
 
 
+На клиенте и сервере запускаем сервис и активируем его при загрузке
+
+![Image 343](lesson34/task1_tun/3.png)
+![Image 344](lesson34/task1_tun/4.png)
+
 
 
 
@@ -3123,10 +3128,6 @@ client                     : ok=9    changed=3    unreachable=0    failed=0    s
 
 ![Image 342](lesson34/task1_tun/2.png)
 
-![Image 343](lesson34/task1_tun/3.png)
-
-
-![Image 344](lesson34/task1_tun/4.png)
 
 
 
