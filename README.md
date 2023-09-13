@@ -3143,11 +3143,58 @@ client                     : ok=9    changed=3    unreachable=0    failed=0    s
 
 Материалы по 1 заданию находятся в паке lesson34/task1_tun проекта.
 
-#### 2. RAS
+##### 2. RAS
 
+Подготавливаем файл конфигурации сервера `server.conf`
+```
+[root@server ~]# cat /etc/openvpn/server.conf
+port 1207
+proto udp
+dev tun
+ca /etc/openvpn/pki/ca.crt
+cert /etc/openvpn/pki/issued/server.crt
+key /etc/openvpn/pki/private/server.key
+dh /etc/openvpn/pki/dh.pem
+server 10.10.10.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+client-to-client
+client-config-dir /etc/openvpn/client
+keepalive 10 120
+comp-lzo
+persist-key
+persist-tun
+status /var/log/openvpn-status.log
+log /var/log/openvpn.log
+verb 3
+```
+Подготавливаем файл `openvpn@.service` для сервиса `openvpn`
 
+```
+[root@server ~]# cat /etc/systemd/system/openvpn@.service
+[Unit]
+Description=OpenVPN Tunneling Application On %I
+After=network.target
+
+[Service]
+Type=notify
+PrivateTmp=true
+ExecStart=/usr/sbin/openvpn --cd /etc/openvpn/ --config %i.conf
+
+[Install]
+WantedBy=multi-user.target
+```
+Формируем стенд с помощью Vagrant + ansible.
+
+В процессе исполнения сценариев Vagrantfile и conf.yml доустанавливаются необходимые пакеты,
+отключается SELinux, файлы openvpn@.service и server.conf копируются в целевые директории.
+
+Проверяем, что установка сервера завершилась успешно:
 
 ![Image 3441](lesson34/task2_ras/1.png)
+
+
+
+
 
 ![Image 3442](lesson34/task2_ras/2.png)
 
