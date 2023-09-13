@@ -2965,7 +2965,39 @@ PING 192.168.20.1 (192.168.20.1) from 192.168.10.1 : 56(84) bytes of data.
 
 На хостовой машине генерируем ключ, который будет использоваться для создания туннеля.
 
-Для обоих случаев tun и tap будем использовать одинаковый Vagrantfile, отличие будет в конфигурации применяемой с помощью ansible.
+![Image 345](lesson34/task1_tun/5.png)
+
+Для обоих случаев tun и tap будем использовать одинаковый Vagrantfile, отличие будет в конфигурации применяемой с помощью ansible 
+`conf.yml` - будем применять для tun conf-tap.yml для tap конфигурации. 
+Также формируем две пары файлов конфигурации openvpn:
+server.conf - tun конфигурация
+client.conf - tun конфигурация
+server-tap.conf - tap конфигурация
+client-tap.conf - tun конфигурация
+
+Конфигурация сервера с использованием tun VPN 
+```
+[root@server ~]# cat /etc/openvpn/server.conf
+dev tun
+ifconfig 10.10.10.1 255.255.255.0
+topology subnet
+secret /etc/openvpn/static.key
+comp-lzo
+status /var/log/openvpn-status.log
+log /var/log/openvpn.log
+verb 3
+[root@server ~]# 
+```
+
+
+
+
+
+
+Сначала в Vagrantfile указываем conf.yml для организации стенда с испозованием tun VPN.
+
+
+
 
 ```
 
@@ -3065,7 +3097,7 @@ client                     : ok=9    changed=3    unreachable=0    failed=0    s
 
 ![Image 344](lesson34/task1_tun/4.png)
 
-![Image 345](lesson34/task1_tun/5.png)
+
 
 ![Image 346](lesson34/task1_tun/6.png)
 
