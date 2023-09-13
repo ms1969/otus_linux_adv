@@ -3055,6 +3055,20 @@ client                     : ok=9    changed=3    unreachable=0    failed=0    s
 
 
 ```
+![Image 341](lesson34/1.png)
+
+
+![Image 342](lesson34/2.png)
+
+![Image 343](lesson34/3.png)
+
+
+![Image 344](lesson34/4.png)
+
+![Image 345](lesson34/5.png)
+
+![Image 346](lesson34/6.png)
+
 
 
 
