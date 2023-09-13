@@ -2967,15 +2967,18 @@ PING 192.168.20.1 (192.168.20.1) from 192.168.10.1 : 56(84) bytes of data.
 
 ![Image 345](lesson34/task1_tun/5.png)
 
-Для обоих случаев tun и tap будем использовать одинаковый Vagrantfile, отличие будет в конфигурации применяемой с помощью ansible 
-`conf.yml` - будем применять для tun conf-tap.yml для tap конфигурации. 
-Также формируем две пары файлов конфигурации openvpn:
-server.conf - tun конфигурация
-client.conf - tun конфигурация
-server-tap.conf - tap конфигурация
-client-tap.conf - tun конфигурация
+Для организации тунелей по технологии tun и tap будем использовать одинаковый Vagrantfile, отличия для организации стендов с разными тунелями будет в применяемой в Vagrantfile скрипта ansible.
+Для организации tun тунеля будем использовать `conf.yml` 
+Для организации tap тунеля conf.yml в Vagrantfile заменим на conf-tap.yml. 
 
-Конфигурация сервера с использованием tun VPN 
+Также формируем две пары файлов конфигурации openvpn:
+
+server.conf - tun конфигурация для сервер
+client.conf - tun конфигурация для клиента
+server-tap.conf - tap конфигурация для сервера
+client-tap.conf - tun конфигурация для клиента
+
+Вывод конфигурации сервера с использованием tun туннеля, другие *.conf файлы расположены в директории lesson34/task1_tun проекта. 
 ```
 [root@server ~]# cat /etc/openvpn/server.conf
 dev tun
@@ -2988,6 +2991,23 @@ log /var/log/openvpn.log
 verb 3
 [root@server ~]# 
 ```
+Для организации работы openvpn подготавливаем файл конфигурации сервиса:
+
+
+```
+[Unit]
+Description=OpenVPN Tunneling Application On %I
+After=network.target
+
+[Service]
+Type=notify
+PrivateTmp=true
+ExecStart=/usr/sbin/openvpn --cd /etc/openvpn/ --config %i.conf
+
+[Install]
+WantedBy=multi-user.target
+
+```
 
 
 
@@ -2999,9 +3019,6 @@ verb 3
 
 
 
-```
-
-```
 
 ```
 root@ task1_tun$ vagrant provision 
