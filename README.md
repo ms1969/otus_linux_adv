@@ -3143,8 +3143,21 @@ client                     : ok=9    changed=3    unreachable=0    failed=0    s
 
 Материалы по 1 заданию находятся в паке lesson34/task1_tun проекта.
 
+#### 2. RAS
 
 
+
+![Image 3441](lesson34/task2_ras/1.png)
+
+![Image 3442](lesson34/task2_ras/2.png)
+
+![Image 3443](lesson34/task2_ras/3.png)
+
+![Image 3444](lesson34/task2_ras/4.png)
+
+![Image 3445](lesson34/task2_ras/5.png)
+
+![Image 3446](lesson34/task2_ras/6.png)
 </details>
 
 
