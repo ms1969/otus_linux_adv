@@ -3188,15 +3188,58 @@ WantedBy=multi-user.target
 В процессе исполнения сценариев Vagrantfile и conf.yml доустанавливаются необходимые пакеты,
 отключается SELinux, файлы openvpn@.service и server.conf копируются в целевые директории.
 
-Проверяем, что установка сервера завершилась успешно:
+Проверяем, что установка стенда завершилась успешно:
 
 ![Image 3441](lesson34/task2_ras/1.png)
 
+После установки стенда генерируем необходимые сертификаты и ключи:
 
+для сервера
+```
+● echo 'rasvpn' | /usr/share/easy-rsa/3.0.8/easyrsa build-ca nopass
+● echo 'rasvpn' | /usr/share/easy-rsa/3.0.8/easyrsa gen-req server nopass
+● echo 'yes' | /usr/share/easy-rsa/3.0.8/easyrsa sign-req server server
+● /usr/share/easy-rsa/3.0.8/easyrsa gen-dh
+● openvpn --genkey --secret ca.key
+```
+для клиента
+```
+● echo 'client' | /usr/share/easy-rsa/3/easyrsa gen-req client nopass
+● echo 'yes' | /usr/share/easy-rsa/3/easyrsa sign-req client client
+```
 
-
+Скопируем следующие файлы сертификатов и ключ для клиента на хост-
+машину.
+```
+/etc/openvpn/pki/ca.crt
+/etc/openvpn/pki/issued/client.crt
+/etc/openvpn/pki/private/client.key
+```
+На хостовой машине (клиенте) подготавливаем конфигурацию клиента:
+```
+root@ client$ cat client.conf 
+dev tun
+proto udp
+remote 192.168.56.10 1207
+client
+resolv-retry infinite
+remote-cert-tls server
+ca ./ca.crt
+cert ./client.crt
+key ./client.key
+route 10.10.10.0 255.255.255.0
+persist-key
+persist-tun
+comp-lzo
+verb 3
+```
+После подготовки конфигурации, на сервере запускаем openvpn@server, добавляем его в автозапуск и проверяем статус
 
 ![Image 3442](lesson34/task2_ras/2.png)
+
+
+
+
 
 ![Image 3443](lesson34/task2_ras/3.png)
 
