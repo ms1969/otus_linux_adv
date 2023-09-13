@@ -3142,6 +3142,7 @@ client                     : ok=9    changed=3    unreachable=0    failed=0    s
 ##### Материалы к 1-му задания размещены в папке `lesson34/task1_tun` проекта.
 
 
+
 ##### 2. RAS
 
 Подготавливаем файл конфигурации сервера `server.conf`
