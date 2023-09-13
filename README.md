@@ -3018,12 +3018,17 @@ WantedBy=multi-user.target
 
 ```
 
+Сначала в Vagrantfile указываем conf.yml и создаем стенд с tun VPN.
+При выполнении сценариев Vagrant + ansible также установливаются необходмые для работы пакеты.
+
+После выполнения сценариев, проверяем удачное завершение.
+
+![Image 341](lesson34/task1_tun/1.png)
 
 
 
 
 
-Сначала в Vagrantfile указываем conf.yml для организации стенда с испозованием tun VPN.
 
 
 
@@ -3113,7 +3118,7 @@ client                     : ok=9    changed=3    unreachable=0    failed=0    s
 
 
 ```
-![Image 341](lesson34/task1_tun/1.png)
+
 
 
 ![Image 342](lesson34/task1_tun/2.png)
