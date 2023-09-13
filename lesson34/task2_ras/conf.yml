@@ -1,5 +1,5 @@
 ---
-- name: ConfigcentralRouter
+- name: ConfigAll
   hosts: all
   become: true
 
