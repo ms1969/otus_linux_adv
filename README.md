@@ -3326,6 +3326,37 @@ Cтенд после добавления в Vagrantfile секции для с�
 
 ![Image 3511](lesson35/11.png)
 
+Заводим в зоне `newdns.lab` запись `www` для обоих клиентов
+
+```
+[root@ns01 ~]# cat /etc/named/named.newdns.lab 
+$TTL 3600
+$ORIGIN newdns.lab.
+@               IN      SOA     ns01.dns.lab. root.dns.lab. (
+                            2711201008 ; serial
+                            3600       ; refresh (1 hour)
+                            600        ; retry (10 minutes)
+                            86400      ; expire (1 day)
+                            600        ; minimum (10 minutes)
+                        )
+
+                IN      NS      ns01.dns.lab.
+                IN      NS      ns02.dns.lab.
+
+; DNS Servers
+ns01            IN      A       192.168.50.10
+ns02            IN      A       192.168.50.11
+
+;WWW
+www             IN      A       192.168.50.15
+www             IN      A       192.168.50.16
+
+```
+
+
+
+
+
 
 ![Image 355](lesson35/5.png)
 
