@@ -3553,13 +3553,16 @@ view "default" {
 ```
 
 
-
+Проверяем, что `client` видет обе зоны `dns.lab` и `newdns.lab`, но во второй только web1. 
 
 ![Image 355](lesson35/5.png)
+Из теста видно, что `client` видит зону dns.lab
 
 ![Image 356](lesson35/6.png)
+Из теста видно, что `client` видит web1 из зоны newdns.lab
 
 ![Image 357](lesson35/7.png)
+Из теста видно, что `client` не видит web2 в зоне newdns.lab
 
 ![Image 358](lesson35/8.png)
 
