@@ -3556,19 +3556,34 @@ view "default" {
 Проверяем, что `client` видет обе зоны `dns.lab` и `newdns.lab`, но во второй только web1. 
 
 ![Image 355](lesson35/5.png)
+
 Из теста видно, что `client` видит зону dns.lab
 
 ![Image 356](lesson35/6.png)
-Из теста видно, что `client` видит web1 из зоны newdns.lab
+
+Из теста видно, что `client` видит `web1` из зоны `newdns.lab`
 
 ![Image 357](lesson35/7.png)
-Из теста видно, что `client` не видит web2 в зоне newdns.lab
+
+Из теста видно, что `client` не видит `web2` в зоне `newdns.lab`
+
+
+Проверяем, что `client2` видить только зону `dns.lab`
 
 ![Image 358](lesson35/8.png)
+
+Из теста видно, что `client2` не видет зону `newdns.lab`
+
 
 ![Image 359](lesson35/9.png)
 
 ![Image 3510](lesson35/10.png)
+
+Также видно, что `client2` видит записи `web1` и `web2` в зоне `dns.lab`
+
+Задание завершено.
+
+##### Материалы работы расположены в папке `lesson35` проекта.
 
 
 </details>
