@@ -3568,7 +3568,8 @@ view "default" {
 Из теста видно, что `client` не видит `web2` в зоне `newdns.lab`
 
 
-Проверяем, что `client2` видить только зону `dns.lab`
+
+Проверяем, что `client2` видит только зону `dns.lab`
 
 ![Image 358](lesson35/8.png)
 
