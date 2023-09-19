@@ -3312,12 +3312,24 @@ Cтенд после добавления в Vagrantfile секции для с�
 
 ![Image 351](lesson35/1.png)
 
+Проверяем имена в зоне dns.lab с помощью утилиты `dig`
 
+![Image 353](lesson35/3.png)
 
+![Image 354](lesson35/4.png)
 
+![Image 355](lesson35/5.png)
 
+![Image 356](lesson35/6.png)
 
+![Image 357](lesson35/7.png)
 
+![Image 358](lesson35/8.png)
 
+![Image 359](lesson35/9.png)
+
+![Image 3510](lesson35/10.png)
+
+![Image 3511](lesson35/11.png)
 
 </details>
