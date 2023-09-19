@@ -3258,7 +3258,7 @@ verb 3
 
 </details>
 
-## Lesson35 - Настройка Split-DNS.
+## Lesson35 - DNS - Настройка,обслуживание, split-DNS.
 
 <details>
 
