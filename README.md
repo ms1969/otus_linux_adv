@@ -3605,6 +3605,7 @@ view "default" {
 
 Равести вланами:
 testClient1 <-> testServer1
+
 testClient2 <-> testServer2
 
 Между centralRouter и inetRouter "пробросить" 2 линка (общая inernal сеть) и объединить их в бонд, проверить работу c отключением интерфейсов
@@ -3616,7 +3617,7 @@ testClient2 <-> testServer2
 
 Итоговая топология
 
-![Image 361](lesson36/Topology.jpg)
+![Image 361](lesson36/1.jpg)
 
 Разворачиваем настроенную топологию через ansible+vagrant+jinja2, проверяем настройки и доступность:
 
