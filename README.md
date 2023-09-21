@@ -3594,7 +3594,7 @@ view "default" {
 
 <details>
 
-##### Задание
+#### Задание
 
 в Office1 в тестовой подсети появляется сервера с доп интерфесами и адресами
 в internal сети testLAN: 
@@ -3612,11 +3612,11 @@ testClient2 <-> testServer2
 Формат сдачи ДЗ - vagrant + ansible
 
 
-### Решение
+#### Решение
 
 Итоговая топология
 
-![Image 1](Lesson36_VLAN_LACP/Topology.jpg)
+![Image 361](lesson36/Topology.jpg)
 
 Разворачиваем настроенную топологию через ansible+vagrant+jinja2, проверяем настройки и доступность:
 
