@@ -3758,10 +3758,11 @@ rtt min/avg/max/mdev = 8.347/8.482/8.618/0.163 ms
 
 В каталоге ansible создадим файл hosts:
 
+```
 [clients]
 client1.otus.lan ansible_host=192.168.57.11 ansible_user=vagrant ansible_ssh_private_key_file=./.vagrant/machines/client1.otus.lan/virtualbox/private_key
 client2.otus.lan ansible_host=192.168.57.12 ansible_user=vagrant ansible_ssh_private_key_file=./.vagrant/machines/client2.otus.lan/virtualbox/private_key
-
+```
 Файл содержит группу clients в которой прописаны 2 хоста: 
 client1.otus.lan
 client2.otus.lan
@@ -3929,8 +3930,7 @@ client2.otus.lan
 
 ```
 
-После конфигурирования 
-с помощью Vagrantfile создаем LDAP сервер и 2 клиента
+##### После конфигурирования ansible с помощью Vagrantfile создаем LDAP сервер и 2 клиента
 
 ```
 root@ lesson37$ cat Vagrantfile 
@@ -3971,7 +3971,7 @@ Vagrant.configure("2") do |config|
   end
 ```
 
-В процессе созданием наблюдаем за процессом и видим открытие портов firewall
+В процессе созданием наблюдаем за процессом и видим открытие необходимых портов firewall
 
 ![Image 363](lesson37/1.png)
 
