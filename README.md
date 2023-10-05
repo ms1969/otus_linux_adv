@@ -3767,9 +3767,9 @@ client1.otus.lan
 client2.otus.lan
 Также указаны и ip-адреса, имя пользователя от которого будет логин и ssh-ключ.
 
-Далее создадим файл provision.yml в котором непосредственно будет выполняться настройка сервера клиентов: 
+##### Далее создадим файл provision.yml, в котором непосредственно будет выполняться настройка сервера и клиентов: 
 
-Франмент с общими настройками для клиентов и сервера(установка пакетов, открытие портов firewall, отключение SElinus, копирование hosts файла:
+Фрагмент с общими настройками для клиентов и сервера (установка пакетов, открытие портов firewall, отключение SElinus, копирование hosts файла):
 
 ```
 - name: Base set up
@@ -3793,9 +3793,6 @@ client2.otus.lan
       state: started
       enabled: true  
 
-
-
-
 # Открываем нужные порты
   - name: allow freeipa network activity
     firewalld:
@@ -3812,7 +3809,6 @@ client2.otus.lan
       - kerberos
       - kpasswd
       - dns
-
 
   #Отключение SElinux из автозагрузки
   #Будет применено после перезагрузки
@@ -3846,6 +3842,96 @@ client2.otus.lan
       mode: 0644
 
 ```
+
+Далее фрагмент установка сервера и создание пользователя:
+
+```
+- name: Config IPA Server
+  hosts: ipa.otus.lan
+  become: yes
+  tasks:
+
+  - name: Upgrade nss
+    ansible.builtin.yum:
+      name: 'nss'
+      state: latest
+
+  - name: install packages
+    ansible.builtin.yum:
+      name:
+        - ipa-server
+        - ipa-server-dns  
+
+
+
+  - name: delete freeipa-server config
+    command: |
+      ipa-server-install -U \
+      --uninstall \
+
+  - name: configure freeipa
+    command: |
+      ipa-server-install -U \
+      -r OTUS.LAN \
+      -n otus.lan \
+      -p otusotus \
+      -a otusotus \
+      --hostname=ipa.otus.lan \
+      --ip-address=192.168.57.10 \
+      --mkhomedir \
+      --no-ntp \
+
+
+  - ipa_user:
+      name: tester1
+      givenname: Max 
+      sn: Tester
+      password: testtest
+      loginshell: /bin/bash
+      ipa_host: ipa.otus.lan
+      ipa_user: admin
+      ipa_pass: otusotus
+```
+
+Далее фрагмент устанавки и подключения к LDAP клиентов:  
+
+```
+- name: Config Clients
+  hosts: client1.otus.lan,client2.otus.lan
+  become: yes
+  tasks:
+
+  - name: Upgrade nss client
+    ansible.builtin.yum:
+      name: 'nss'
+      state: latest
+
+#Установка клиента Freeipa
+  - name: install module ipa-client
+    ansible.builtin.yum:
+      name:
+        - freeipa-client
+      state: present
+      update_cache: true
+
+      
+
+  - name: configure ipa-client
+    command: |
+      ipa-client-install -U \
+      --principal admin@OTUS.LAN \
+      --password otusotus \
+      --server ipa.otus.lan \
+      --domain otus.lan \
+      --realm OTUS.LAN \
+      --mkhomedir \
+      --force-join
+
+```
+
+
+
+
 
 
 
