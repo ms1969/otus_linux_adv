@@ -3756,6 +3756,101 @@ rtt min/avg/max/mdev = 8.347/8.482/8.618/0.163 ms
 
 #### Решение
 
+В каталоге ansible создадим файл hosts:
+
+[clients]
+client1.otus.lan ansible_host=192.168.57.11 ansible_user=vagrant ansible_ssh_private_key_file=./.vagrant/machines/client1.otus.lan/virtualbox/private_key
+client2.otus.lan ansible_host=192.168.57.12 ansible_user=vagrant ansible_ssh_private_key_file=./.vagrant/machines/client2.otus.lan/virtualbox/private_key
+
+Файл содержит группу clients в которой прописаны 2 хоста: 
+client1.otus.lan
+client2.otus.lan
+Также указаны и ip-адреса, имя пользователя от которого будет логин и ssh-ключ.
+
+Далее создадим файл provision.yml в котором непосредственно будет выполняться настройка сервера клиентов: 
+
+Франмент с общими настройками для клиентов и сервера(установка пакетов, открытие портов firewall, отключение SElinus, копирование hosts файла:
+
+```
+- name: Base set up
+  hosts: all
+  #Выполнять действия от root-пользователя
+  become: yes
+  tasks:
+  #Установка текстового редактора Vim и chrony
+  - name: install softs on CentOS
+    ansible.builtin.yum:
+      name:
+        - vim
+        - chrony
+      state: present
+      update_cache: true
+  
+  #Включаем firewalld 
+  - name: enable firewalld
+    service:
+      name: firewalld
+      state: started
+      enabled: true  
+
+
+
+
+# Открываем нужные порты
+  - name: allow freeipa network activity
+    firewalld:
+      service: "{{ item }}"
+      permanent: yes
+      immediate: yes
+      state: enabled
+    loop:
+      - ntp
+      - http
+      - https
+      - ldap
+      - ldaps
+      - kerberos
+      - kpasswd
+      - dns
+
+
+  #Отключение SElinux из автозагрузки
+  #Будет применено после перезагрузки
+  - name: disable SElinux
+    selinux:
+      state: disabled
+  
+  #Отключение SElinux до перезагрузки
+  - name: disable SElinux now
+    shell: setenforce 0
+
+  #Установка временной зоны Европа/Москва    
+  - name: Set up timezone
+    timezone:
+      name: "Europe/Moscow"
+  
+  #Запуск службы Chrony, добавление её в автозагрузку
+  - name: enable chrony
+    service:
+      name: chronyd
+      state: restarted
+      enabled: true
+  
+  #Копирование файла /etc/hosts c правами root:root 0644
+  - name: change /etc/hosts
+    ansible.builtin.copy:
+      src: hosts
+      dest: /etc/hosts
+      owner: root
+      group: root
+      mode: 0644
+
+```
+
+
+
+
+
 С помощью Vagrant создаем LDAP сервер и 2 клиента
 
 ```
