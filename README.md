@@ -3742,9 +3742,65 @@ rtt min/avg/max/mdev = 8.347/8.482/8.618/0.163 ms
 
 </details>
 
+## Lesson37 - LDAP.
+
+<details>
+
+#### Задание:
+1) Установить FreeIPA
+2) Написать Ansible-playbook для конфигурации клиента
+
+Дополнительное задание
+3)** Firewall должен быть включен на сервере и на клиенте
+
+#### Решение
+
+С помощью Vagrant создаем LDAP сервер и 2 клиента
+
+```
+root@ lesson37$ cat Vagrantfile 
+Vagrant.configure("2") do |config|
+    # Указываем ОС, версию, количество ядер и ОЗУ
+    config.vm.box = "centos/7"
+    #config.vm.box_version = "20210210.0"
+ 
+    config.vm.provider :virtualbox do |v|
+      v.memory = 2048
+      v.cpus = 1
+    end
+  
+    # Указываем имена хостов и их IP-адреса
+    boxes = [
+      { :name => "ipa.otus.lan",
+        :ip => "192.168.57.10",
+      },
+      { :name => "client1.otus.lan",
+        :ip => "192.168.57.11",
+      },
+      { :name => "client2.otus.lan",
+        :ip => "192.168.57.12",
+      }
+    ]
+    # Цикл запуска виртуальных машин
+    boxes.each do |opts|
+      config.vm.define opts[:name] do |config|
+        config.vm.hostname = opts[:name]
+        config.vm.network "private_network", ip: opts[:ip]
+      end
+     config.vm.provision "ansible" do |ansible|
+     	ansible.playbook = "provisioning/playbook.yml"
+     	ansible.inventory_path = "ansible/hosts"
+     	ansible.become = "true"
+      end
+    end
+  end
+
+
+```
 
 
 
+</details>
 
 
 
