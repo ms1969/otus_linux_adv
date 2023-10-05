@@ -3929,15 +3929,8 @@ client2.otus.lan
 
 ```
 
-
-
-
-
-
-
-
-
-С помощью Vagrant создаем LDAP сервер и 2 клиента
+После конфигурирования 
+с помощью Vagrantfile создаем LDAP сервер и 2 клиента
 
 ```
 root@ lesson37$ cat Vagrantfile 
@@ -3976,22 +3969,26 @@ Vagrant.configure("2") do |config|
       end
     end
   end
-
-
 ```
 
+В процессе созданием наблюдаем за процессом и видим открытие портов firewall
 
+![Image 363](lesson37/1.png)
+
+С помощью команды `kinit tester1' проверяем подключениt клиента к серверу и меняем пароль:
+
+![Image 363](lesson37/2.png)
 
 
 Добавляем запись в /etc/hosts на хостовой машине 
 
 Убеждаемся через web интерефейс, что пользователь создан
 
-![Image 363](lesson37/1.png)
+![Image 363](lesson37/3.png)
 
 Убеждаемся, что клиенты подключились к LDAP
 
-![Image 363](lesson37/2.png)
+![Image 363](lesson37/4.png)
 
 </details>
 
